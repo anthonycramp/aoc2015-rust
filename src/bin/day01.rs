@@ -7,6 +7,8 @@ fn main() {
 fn follow_directions(directions: &str) -> i32 {
     let floors_up = directions.chars().filter(|&c| c == '(').count() as i32;
     let floors_down = directions.chars().filter(|&c| c == ')').count() as i32;
+    // this could be
+    // let floors_down = directions.len() as i32 - floors_up;
 
     floors_up - floors_down
 }
