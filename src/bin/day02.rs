@@ -57,7 +57,7 @@ impl BoxDimensions {
 
 impl From<&str> for BoxDimensions {
     fn from(input: &str) -> Self {
-        let fields: Vec<_> = input.split("x").collect();
+        let fields: Vec<_> = input.split('x').collect();
         Self {
             width: fields[0].parse().unwrap(),
             length: fields[1].parse().unwrap(),
