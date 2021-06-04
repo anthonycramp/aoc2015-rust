@@ -1,7 +1,11 @@
 const INPUT: &str = include_str!("../../problem_inputs/day01.txt");
 
 fn main() {
-    println!("Day 01: {}", follow_directions(INPUT));
+    println!("Day 01 Part 1: {}", follow_directions(INPUT));
+    println!(
+        "Day 01 Part 2: {:?}",
+        follow_directions_to_basement(INPUT).unwrap()
+    );
 }
 
 fn follow_directions(directions: &str) -> i32 {
