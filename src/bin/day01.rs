@@ -1,4 +1,4 @@
-const INPUT: &str = include_str!("../../problem_inputs/day01.txt");
+const INPUT: &str = include_str!("inputs/day01.txt");
 
 fn main() {
     println!("Day 01 Part 1: {}", follow_directions(INPUT));
