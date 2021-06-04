@@ -14,6 +14,19 @@ fn follow_directions(directions: &str) -> i32 {
 }
 
 fn follow_directions_to_basement(directions: &str) -> Option<usize> {
+    let mut current_floor = 0;
+
+    for (i, c) in directions.chars().enumerate() {
+        match c {
+            '(' => current_floor += 1,
+            ')' => current_floor -= 1,
+            _ => (),
+        }
+
+        if current_floor == -1 {
+            return Some(i + 1);
+        }
+    }
     None
 }
 
