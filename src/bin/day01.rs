@@ -13,17 +13,26 @@ fn follow_directions(directions: &str) -> i32 {
     floors_up - floors_down
 }
 
+fn follow_directions_to_basement(directions: &str) -> Option<usize> {
+    None
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
-    fn test_empty() {
+    fn test_empty_part1() {
         assert_eq!(follow_directions(""), 0);
     }
 
     #[test]
-    fn day01_problem_tests() {
+    fn test_empty_part2() {
+        assert!(follow_directions_to_basement("").is_none());
+    }
+
+    #[test]
+    fn day01_problem_tests_part1() {
         struct Test {
             directions: &'static str,
             expected_floor: i32,
@@ -74,6 +83,61 @@ mod tests {
         } in test_cases.iter()
         {
             assert_eq!(follow_directions(directions), *expected_floor);
+        }
+    }
+
+    #[test]
+    fn day01_problem_tests_part2() {
+        struct Test {
+            directions: &'static str,
+            basement_reached: Option<usize>,
+        }
+
+        let test_cases = [
+            Test {
+                directions: "(())",
+                basement_reached: None,
+            },
+            Test {
+                directions: "()()",
+                basement_reached: None,
+            },
+            Test {
+                directions: "(((",
+                basement_reached: None,
+            },
+            Test {
+                directions: "(()(()(",
+                basement_reached: None,
+            },
+            Test {
+                directions: "))(((((",
+                basement_reached: Some(1),
+            },
+            Test {
+                directions: "())",
+                basement_reached: Some(3),
+            },
+            Test {
+                directions: "))(",
+                basement_reached: Some(1),
+            },
+            Test {
+                directions: ")))",
+                basement_reached: Some(1),
+            },
+            Test {
+                directions: ")())())",
+                basement_reached: Some(1),
+            },
+        ];
+
+        for Test {
+            directions,
+            basement_reached,
+        } in test_cases.iter()
+        {
+            assert_eq!(follow_directions_to_basement(directions), *basement_reached);
         }
     }
 }
