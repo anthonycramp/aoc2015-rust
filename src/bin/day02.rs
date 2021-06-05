@@ -1,3 +1,8 @@
+use regex;
+
+#[macro_use]
+extern crate lazy_static;
+
 const INPUT: &str = include_str!("inputs/day02.txt");
 
 fn main() {
@@ -57,11 +62,15 @@ fn get_ribbon_needed(box_dimensions: &BoxDimensions) -> u32 {
 
 impl From<&str> for BoxDimensions {
     fn from(input: &str) -> Self {
-        let fields: Vec<_> = input.split('x').collect();
+        lazy_static! {
+            static ref RE: regex::Regex = regex::Regex::new(r"(\d+)x(\d+)x(\d+)").unwrap();
+        }
+
+        let fields = RE.captures(input).unwrap();
         Self {
-            width: fields[0].parse().unwrap(),
-            length: fields[1].parse().unwrap(),
-            height: fields[2].parse().unwrap(),
+            width: fields.get(1).unwrap().as_str().parse().unwrap(),
+            length: fields.get(2).unwrap().as_str().parse().unwrap(),
+            height: fields.get(3).unwrap().as_str().parse().unwrap(),
         }
     }
 }
