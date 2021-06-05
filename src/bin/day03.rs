@@ -41,19 +41,8 @@ fn get_houses_delivered(input: &str) -> HashSet<Location> {
 }
 
 fn get_houses_delivered_with_robo_santa(input: &str) -> HashSet<Location> {
-    let santas_directions: String = input
-        .chars()
-        .step_by(2)
-        .collect::<Vec<_>>()
-        .into_iter()
-        .collect();
-    let robos_directions: String = input
-        .chars()
-        .skip(1)
-        .step_by(2)
-        .collect::<Vec<_>>()
-        .into_iter()
-        .collect();
+    let santas_directions: String = input.chars().step_by(2).collect();
+    let robos_directions: String = input.chars().skip(1).step_by(2).collect();
 
     let santas_houses = get_houses_delivered(&santas_directions);
     let robos_houses = get_houses_delivered(&robos_directions);
