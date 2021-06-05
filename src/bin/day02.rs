@@ -34,14 +34,26 @@ impl BoxDimensions {
     fn get_volume(&self) -> u32 {
         self.width * self.height * self.length
     }
+
+    fn get_side_areas(&self) -> [u32; 3] {
+        [
+            self.width * self.length,
+            self.length * self.height,
+            self.height * self.width,
+        ]
+    }
+
+    fn get_side_perimeters(&self) -> [u32; 3] {
+        [
+            2 * self.width + 2 * self.length,
+            2 * self.length + 2 * self.height,
+            2 * self.height + 2 * self.width,
+        ]
+    }
 }
 
 fn get_wrapping_paper_needed(box_dimensions: &BoxDimensions) -> u32 {
-    let side_areas = [
-        box_dimensions.width * box_dimensions.length,
-        box_dimensions.length * box_dimensions.height,
-        box_dimensions.height * box_dimensions.width,
-    ];
+    let side_areas = box_dimensions.get_side_areas();
 
     let minimum_side_area = side_areas.iter().min().unwrap();
 
@@ -49,11 +61,7 @@ fn get_wrapping_paper_needed(box_dimensions: &BoxDimensions) -> u32 {
 }
 
 fn get_ribbon_needed(box_dimensions: &BoxDimensions) -> u32 {
-    let side_perimeters = [
-        2 * box_dimensions.width + 2 * box_dimensions.length,
-        2 * box_dimensions.length + 2 * box_dimensions.height,
-        2 * box_dimensions.height + 2 * box_dimensions.width,
-    ];
+    let side_perimeters = box_dimensions.get_side_perimeters();
 
     let minimum_side_perimeter = side_perimeters.iter().min().unwrap();
 
