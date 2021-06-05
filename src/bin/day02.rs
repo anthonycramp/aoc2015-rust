@@ -8,14 +8,14 @@ fn main() {
 fn part1(input: &str) -> u32 {
     input
         .lines()
-        .map(|l| BoxDimensions::from(l).get_wrapping_paper_needed())
+        .map(|l| get_wrapping_paper_needed(&BoxDimensions::from(l)))
         .sum()
 }
 
 fn part2(input: &str) -> u32 {
     input
         .lines()
-        .map(|l| BoxDimensions::from(l).get_ribbon_needed())
+        .map(|l| get_ribbon_needed(&BoxDimensions::from(l)))
         .sum()
 }
 
@@ -26,33 +26,33 @@ struct BoxDimensions {
 }
 
 impl BoxDimensions {
-    fn get_wrapping_paper_needed(&self) -> u32 {
-        let side_areas = [
-            self.width * self.length,
-            self.length * self.height,
-            self.height * self.width,
-        ];
-
-        let minimum_side_area = side_areas.iter().min().unwrap();
-
-        2 * side_areas[0] + 2 * side_areas[1] + 2 * side_areas[2] + minimum_side_area
-    }
-
-    fn get_ribbon_needed(&self) -> u32 {
-        let side_perimeters = [
-            2 * self.width + 2 * self.length,
-            2 * self.length + 2 * self.height,
-            2 * self.height + 2 * self.width,
-        ];
-
-        let minimum_side_perimeter = side_perimeters.iter().min().unwrap();
-
-        minimum_side_perimeter + self.get_volume()
-    }
-
     fn get_volume(&self) -> u32 {
         self.width * self.height * self.length
     }
+}
+
+fn get_wrapping_paper_needed(box_dimensions: &BoxDimensions) -> u32 {
+    let side_areas = [
+        box_dimensions.width * box_dimensions.length,
+        box_dimensions.length * box_dimensions.height,
+        box_dimensions.height * box_dimensions.width,
+    ];
+
+    let minimum_side_area = side_areas.iter().min().unwrap();
+
+    2 * side_areas[0] + 2 * side_areas[1] + 2 * side_areas[2] + minimum_side_area
+}
+
+fn get_ribbon_needed(box_dimensions: &BoxDimensions) -> u32 {
+    let side_perimeters = [
+        2 * box_dimensions.width + 2 * box_dimensions.length,
+        2 * box_dimensions.length + 2 * box_dimensions.height,
+        2 * box_dimensions.height + 2 * box_dimensions.width,
+    ];
+
+    let minimum_side_perimeter = side_perimeters.iter().min().unwrap();
+
+    minimum_side_perimeter + box_dimensions.get_volume()
 }
 
 impl From<&str> for BoxDimensions {
@@ -103,7 +103,7 @@ mod tests {
         } in test_cases.iter()
         {
             assert_eq!(
-                BoxDimensions::from(*input).get_wrapping_paper_needed(),
+                get_wrapping_paper_needed(&BoxDimensions::from(*input)),
                 *expected_output
             );
         }
@@ -133,7 +133,7 @@ mod tests {
         } in test_cases.iter()
         {
             assert_eq!(
-                BoxDimensions::from(*input).get_ribbon_needed(),
+                get_ribbon_needed(&BoxDimensions::from(*input)),
                 *expected_output
             );
         }
