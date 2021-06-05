@@ -39,15 +39,15 @@ impl BoxDimensions {
     }
 
     fn get_ribbon_needed(&self) -> u32 {
-        let side_perimetres = [
+        let side_perimeters = [
             2 * self.width + 2 * self.length,
             2 * self.length + 2 * self.height,
             2 * self.height + 2 * self.width,
         ];
 
-        let minimum_side_perimetre = side_perimetres.iter().min().unwrap();
+        let minimum_side_perimeter = side_perimeters.iter().min().unwrap();
 
-        minimum_side_perimetre + self.get_volume()
+        minimum_side_perimeter + self.get_volume()
     }
 
     fn get_volume(&self) -> u32 {
