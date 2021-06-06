@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-const INPUT: &'static str = include_str!("inputs/day03.txt");
+const INPUT: &str = include_str!("inputs/day03.txt");
 
 fn main() {
     println!("Day 03 Part 1: {}", part1(INPUT));

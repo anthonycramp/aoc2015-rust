@@ -1,4 +1,4 @@
-const INPUT: &'static str = include_str!("inputs/day05.txt");
+const INPUT: &str = include_str!("inputs/day05.txt");
 
 fn main() {
     println!("Day 05 Part 1: {}", part1(INPUT));

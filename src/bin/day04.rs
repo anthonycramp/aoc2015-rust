@@ -1,4 +1,4 @@
-const INPUT: &'static str = "bgvyzdsv";
+const INPUT: &str = "bgvyzdsv";
 
 fn main() {
     println!("Day 04 Part 1: {}", part1(INPUT));
