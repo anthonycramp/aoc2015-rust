@@ -37,14 +37,13 @@ fn evaluate_string_part1(input: &str) -> Rating {
 }
 
 fn part1(input: &str) -> u32 {
-    let mut count = 0;
-    for line in input.lines() {
-        if evaluate_string_part1(line) == Rating::Nice {
-            count += 1;
-        }
-    }
-
-    count
+    input
+        .lines()
+        .map(|l| match evaluate_string_part1(l) {
+            Rating::Nice => 1,
+            _ => 0,
+        })
+        .sum()
 }
 
 fn contains_pair_of_two_letters(input: &str) -> bool {
