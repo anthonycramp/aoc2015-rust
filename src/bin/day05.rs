@@ -36,14 +36,18 @@ fn evaluate_string_part1(input: &str) -> Rating {
     }
 }
 
-fn part1(input: &str) -> u32 {
+fn count_nices(input: &str, evaluation_fn: fn(&str) -> Rating) -> u32 {
     input
         .lines()
-        .map(|l| match evaluate_string_part1(l) {
+        .map(|l| match evaluation_fn(l) {
             Rating::Nice => 1,
             _ => 0,
         })
         .sum()
+}
+
+fn part1(input: &str) -> u32 {
+    count_nices(input, evaluate_string_part1)
 }
 
 fn contains_pair_of_two_letters(input: &str) -> bool {
@@ -95,14 +99,7 @@ fn evaluate_string_part2(input: &str) -> Rating {
 }
 
 fn part2(input: &str) -> u32 {
-    let mut count = 0;
-    for line in input.lines() {
-        if evaluate_string_part2(line) == Rating::Nice {
-            count += 1;
-        }
-    }
-
-    count
+    count_nices(input, evaluate_string_part2)
 }
 
 #[cfg(test)]
