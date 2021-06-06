@@ -13,6 +13,16 @@ enum Rating {
     Nice,
 }
 
+impl From<bool> for Rating {
+    fn from(v: bool) -> Self {
+        if v {
+            Rating::Nice
+        } else {
+            Rating::Naughty
+        }
+    }
+}
+
 fn contains_at_least_three_vowels(input: &str) -> bool {
     input.chars().filter(|c| "aeiou".contains(*c)).count() >= 3
 }
@@ -26,14 +36,11 @@ fn contains_forbidden_strings(input: &str) -> bool {
 }
 
 fn evaluate_string_part1(input: &str) -> Rating {
-    if contains_at_least_three_vowels(input)
-        && contains_at_least_one_double(input)
-        && !contains_forbidden_strings(input)
-    {
-        Rating::Nice
-    } else {
-        Rating::Naughty
-    }
+    Rating::from(
+        contains_at_least_three_vowels(input)
+            && contains_at_least_one_double(input)
+            && !contains_forbidden_strings(input),
+    )
 }
 
 fn count_nices(input: &str, evaluation_fn: fn(&str) -> Rating) -> u32 {
@@ -91,11 +98,7 @@ fn contains_repeat_separated_by_one(input: &str) -> bool {
 }
 
 fn evaluate_string_part2(input: &str) -> Rating {
-    if contains_pair_of_two_letters(input) && contains_repeat_separated_by_one(input) {
-        Rating::Nice
-    } else {
-        Rating::Naughty
-    }
+    Rating::from(contains_pair_of_two_letters(input) && contains_repeat_separated_by_one(input))
 }
 
 fn part2(input: &str) -> u32 {
