@@ -18,17 +18,7 @@ fn contains_at_least_three_vowels(input: &str) -> bool {
 }
 
 fn contains_at_least_one_double(input: &str) -> bool {
-    let mut prev_char = ' ';
-
-    for c in input.chars() {
-        if prev_char == c {
-            return true;
-        }
-
-        prev_char = c;
-    }
-
-    false
+    input.as_bytes().windows(2).any(|w| w[0] == w[1])
 }
 
 fn contains_forbidden_strings(input: &str) -> bool {
