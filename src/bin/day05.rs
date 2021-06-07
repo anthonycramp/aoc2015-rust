@@ -32,7 +32,8 @@ fn contains_at_least_one_double(input: &str) -> bool {
 }
 
 fn contains_forbidden_strings(input: &str) -> bool {
-    input.contains("ab") || input.contains("cd") || input.contains("pq") || input.contains("xy")
+    static FORBIDDEN_STRINGS: &[&str] = &["ab", "cd", "pq", "xy"];
+    FORBIDDEN_STRINGS.iter().any(|f| input.contains(f))
 }
 
 fn evaluate_string_part1(input: &str) -> Rating {
@@ -70,17 +71,20 @@ fn contains_pair_of_two_letters(input: &str) -> bool {
     }
 
     // I have a map with keys being pairs of characters and values being
-    // the indexes of the pair in the original string. For a pair to exist
+    // the indexes of the pair in the original string. If a pair exists
     // more than once, it will have more than one index. For there to be
     // distinct pairs, there needs to be either three or more indexes, or
     // two indexes need to be separated by more than one position. These take
     // care of special cases such as "aaa", which will generate two indexes
-    // [0,1], which fails the more than one position requirements. String
+    // [0,1], which fails the more than one position requirement. String
     // "aaaa" will result in three indexes [0,1,2], which is valid. String
-    // "aabaa" will generate two indexes for "aa", [0,3], which is fine
+    // "aabaa" will generate two indexes for "aa", [0,3], which is fine.
 
     for v in pair_indices.values() {
-        if (v.len() == 2 && v[1] - v[0] > 1) || v.len() >= 3 {
+        let definitely_two_pairs = v.len() >= 3;
+        let two_pairs_that_dont_overlap = v.len() == 2 && v[1] - v[0] > 1;
+
+        if two_pairs_that_dont_overlap || definitely_two_pairs {
             return true;
         }
     }
@@ -89,12 +93,7 @@ fn contains_pair_of_two_letters(input: &str) -> bool {
 }
 
 fn contains_repeat_separated_by_one(input: &str) -> bool {
-    for w in input.as_bytes().windows(3) {
-        if w[0] == w[2] {
-            return true;
-        }
-    }
-    false
+    input.as_bytes().windows(3).any(|w| w[0] == w[2])
 }
 
 fn evaluate_string_part2(input: &str) -> Rating {
