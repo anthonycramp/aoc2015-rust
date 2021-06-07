@@ -13,6 +13,16 @@ enum Rating {
     Nice,
 }
 
+impl Rating {
+    fn nice_if_true(v: bool) -> Self {
+        if v {
+            Rating::Nice
+        } else {
+            Rating::Naughty
+        }
+    }
+}
+
 impl From<bool> for Rating {
     fn from(v: bool) -> Self {
         if v {
@@ -37,7 +47,7 @@ fn contains_forbidden_strings(input: &str) -> bool {
 }
 
 fn evaluate_string_part1(input: &str) -> Rating {
-    Rating::from(
+    Rating::nice_if_true(
         contains_at_least_three_vowels(input)
             && contains_at_least_one_double(input)
             && !contains_forbidden_strings(input),
