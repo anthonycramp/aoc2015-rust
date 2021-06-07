@@ -91,10 +91,10 @@ fn contains_pair_of_two_letters(input: &str) -> bool {
     // "aabaa" will generate two indexes for "aa", [0,3], which is fine.
 
     for v in pair_indices.values() {
-        let definitely_two_pairs = v.len() >= 3;
+        let more_than_two_pairs = v.len() >= 3;
         let two_pairs_that_dont_overlap = v.len() == 2 && v[1] - v[0] > 1;
 
-        if two_pairs_that_dont_overlap || definitely_two_pairs {
+        if two_pairs_that_dont_overlap || more_than_two_pairs {
             return true;
         }
     }
