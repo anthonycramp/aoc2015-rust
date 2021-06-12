@@ -53,72 +53,55 @@ fn get_houses_delivered_with_robo_santa(input: &str) -> HashSet<Location> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use aoc2015::test_support::TestCase;
 
     #[test]
     fn test_part1() {
-        struct TestCase {
-            input: &'static str,
-            expected_output: u32,
-        }
-
         let test_cases = [
             TestCase {
                 input: ">",
-                expected_output: 2,
+                expected: 2,
             },
             TestCase {
                 input: "^>v<",
-                expected_output: 4,
+                expected: 4,
             },
             TestCase {
                 input: "^v^v^v^v^v",
-                expected_output: 2,
+                expected: 2,
             },
         ];
 
-        for TestCase {
-            input,
-            expected_output,
-        } in test_cases.iter()
-        {
-            assert_eq!(get_houses_delivered(*input).len() as u32, *expected_output);
+        for TestCase { input, expected } in test_cases.iter() {
+            assert_eq!(get_houses_delivered(*input).len() as u32, *expected);
         }
     }
 
     #[test]
     fn test_part2() {
-        struct TestCase {
-            input: &'static str,
-            expected_output: u32,
-        }
-
         let test_cases = [
             TestCase {
                 input: ">",
-                expected_output: 2,
+                expected: 2,
             },
             TestCase {
                 input: "^v",
-                expected_output: 3,
+                expected: 3,
             },
             TestCase {
                 input: "^>v<",
-                expected_output: 3,
+                expected: 3,
             },
             TestCase {
                 input: "^v^v^v^v^v",
-                expected_output: 11,
+                expected: 11,
             },
         ];
 
-        for TestCase {
-            input,
-            expected_output,
-        } in test_cases.iter()
-        {
+        for TestCase { input, expected } in test_cases.iter() {
             assert_eq!(
                 get_houses_delivered_with_robo_santa(*input).len() as u32,
-                *expected_output
+                *expected
             );
         }
     }

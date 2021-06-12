@@ -86,6 +86,7 @@ impl From<&str> for BoxDimensions {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use aoc2015::test_support::TestCase;
 
     #[test]
     fn test_parse_box_dimensions() {
@@ -98,30 +99,21 @@ mod tests {
 
     #[test]
     fn test_part1() {
-        struct TestCase {
-            input: &'static str,
-            expected_output: u32,
-        }
-
         let test_cases = [
             TestCase {
                 input: "2x3x4",
-                expected_output: 58,
+                expected: 58,
             },
             TestCase {
                 input: "1x1x10",
-                expected_output: 43,
+                expected: 43,
             },
         ];
 
-        for TestCase {
-            input,
-            expected_output,
-        } in test_cases.iter()
-        {
+        for TestCase { input, expected } in test_cases.iter() {
             assert_eq!(
                 get_wrapping_paper_needed(&BoxDimensions::from(*input)),
-                *expected_output
+                *expected
             );
         }
     }
@@ -130,29 +122,22 @@ mod tests {
     fn test_part2() {
         struct TestCase {
             input: &'static str,
-            expected_output: u32,
+            expected: u32,
         }
 
         let test_cases = [
             TestCase {
                 input: "2x3x4",
-                expected_output: 34,
+                expected: 34,
             },
             TestCase {
                 input: "1x1x10",
-                expected_output: 14,
+                expected: 14,
             },
         ];
 
-        for TestCase {
-            input,
-            expected_output,
-        } in test_cases.iter()
-        {
-            assert_eq!(
-                get_ribbon_needed(&BoxDimensions::from(*input)),
-                *expected_output
-            );
+        for TestCase { input, expected } in test_cases.iter() {
+            assert_eq!(get_ribbon_needed(&BoxDimensions::from(*input)), *expected);
         }
     }
 }

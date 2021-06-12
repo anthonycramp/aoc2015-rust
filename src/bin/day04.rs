@@ -29,31 +29,23 @@ fn find_hash(key: &str, digest_prefix: &str) -> u32 {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use aoc2015::test_support::TestCase;
 
     #[test]
     fn test_part1() {
-        struct TestCase {
-            input: &'static str,
-            expected_output: u32,
-        }
-
         let test_cases = [
             TestCase {
                 input: "abcdef",
-                expected_output: 609043,
+                expected: 609043,
             },
             TestCase {
                 input: "pqrstuv",
-                expected_output: 1048970,
+                expected: 1048970,
             },
         ];
 
-        for TestCase {
-            input,
-            expected_output,
-        } in test_cases.iter()
-        {
-            assert_eq!(part1(*input), *expected_output);
+        for TestCase { input, expected } in test_cases.iter() {
+            assert_eq!(part1(*input), *expected);
         }
     }
 }

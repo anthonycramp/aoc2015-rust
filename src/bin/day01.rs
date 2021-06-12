@@ -37,6 +37,7 @@ fn follow_directions_to_basement(directions: &str) -> Option<usize> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use aoc2015::test_support::TestCase;
 
     #[test]
     fn test_empty_part1() {
@@ -50,111 +51,93 @@ mod tests {
 
     #[test]
     fn day01_problem_tests_part1() {
-        struct Test {
-            directions: &'static str,
-            expected_floor: i32,
-        }
-
         let test_cases = [
-            Test {
-                directions: "(())",
-                expected_floor: 0,
+            TestCase {
+                input: "(())",
+                expected: 0,
             },
-            Test {
-                directions: "()()",
-                expected_floor: 0,
+            TestCase {
+                input: "()()",
+                expected: 0,
             },
-            Test {
-                directions: "(((",
-                expected_floor: 3,
+            TestCase {
+                input: "(((",
+                expected: 3,
             },
-            Test {
-                directions: "(()(()(",
-                expected_floor: 3,
+            TestCase {
+                input: "(()(()(",
+                expected: 3,
             },
-            Test {
-                directions: "))(((((",
-                expected_floor: 3,
+            TestCase {
+                input: "))(((((",
+                expected: 3,
             },
-            Test {
-                directions: "())",
-                expected_floor: -1,
+            TestCase {
+                input: "())",
+                expected: -1,
             },
-            Test {
-                directions: "))(",
-                expected_floor: -1,
+            TestCase {
+                input: "))(",
+                expected: -1,
             },
-            Test {
-                directions: ")))",
-                expected_floor: -3,
+            TestCase {
+                input: ")))",
+                expected: -3,
             },
-            Test {
-                directions: ")())())",
-                expected_floor: -3,
+            TestCase {
+                input: ")())())",
+                expected: -3,
             },
         ];
 
-        for Test {
-            directions,
-            expected_floor,
-        } in test_cases.iter()
-        {
-            assert_eq!(follow_directions(directions), *expected_floor);
+        for TestCase { input, expected } in test_cases.iter() {
+            assert_eq!(follow_directions(input), *expected);
         }
     }
 
     #[test]
     fn day01_problem_tests_part2() {
-        struct Test {
-            directions: &'static str,
-            basement_reached: Option<usize>,
-        }
-
         let test_cases = [
-            Test {
-                directions: "(())",
-                basement_reached: None,
+            TestCase {
+                input: "(())",
+                expected: None,
             },
-            Test {
-                directions: "()()",
-                basement_reached: None,
+            TestCase {
+                input: "()()",
+                expected: None,
             },
-            Test {
-                directions: "(((",
-                basement_reached: None,
+            TestCase {
+                input: "(((",
+                expected: None,
             },
-            Test {
-                directions: "(()(()(",
-                basement_reached: None,
+            TestCase {
+                input: "(()(()(",
+                expected: None,
             },
-            Test {
-                directions: "))(((((",
-                basement_reached: Some(1),
+            TestCase {
+                input: "))(((((",
+                expected: Some(1),
             },
-            Test {
-                directions: "())",
-                basement_reached: Some(3),
+            TestCase {
+                input: "())",
+                expected: Some(3),
             },
-            Test {
-                directions: "))(",
-                basement_reached: Some(1),
+            TestCase {
+                input: "))(",
+                expected: Some(1),
             },
-            Test {
-                directions: ")))",
-                basement_reached: Some(1),
+            TestCase {
+                input: ")))",
+                expected: Some(1),
             },
-            Test {
-                directions: ")())())",
-                basement_reached: Some(1),
+            TestCase {
+                input: ")())())",
+                expected: Some(1),
             },
         ];
 
-        for Test {
-            directions,
-            basement_reached,
-        } in test_cases.iter()
-        {
-            assert_eq!(follow_directions_to_basement(directions), *basement_reached);
+        for TestCase { input, expected } in test_cases.iter() {
+            assert_eq!(follow_directions_to_basement(input), *expected);
         }
     }
 }

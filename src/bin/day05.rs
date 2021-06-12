@@ -108,14 +108,10 @@ fn part2(input: &str) -> u32 {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use aoc2015::test_support::TestCase;
 
     #[test]
     fn test_part1() {
-        struct TestCase {
-            input: &'static str,
-            expected: Rating,
-        }
-
         let test_cases = [
             TestCase {
                 input: "ugknbfddgicrmopn",
@@ -146,11 +142,6 @@ mod tests {
 
     #[test]
     fn test_part2() {
-        struct TestCase {
-            input: &'static str,
-            expected: Rating,
-        }
-
         let test_cases = [
             TestCase {
                 input: "qjhvhtzxzqqjkmpb",
