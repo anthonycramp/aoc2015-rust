@@ -37,7 +37,7 @@ fn follow_directions_to_basement(directions: &str) -> Option<usize> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use aoc2015::test_support::TestCase;
+    use aoc2015::test_support::{run_tests, TestCase};
 
     #[test]
     fn test_empty_part1() {
@@ -90,54 +90,51 @@ mod tests {
             },
         ];
 
-        for TestCase { input, expected } in test_cases.iter() {
-            assert_eq!(follow_directions(input), *expected);
-        }
+        run_tests(follow_directions, &test_cases);
     }
 
     #[test]
     fn day01_problem_tests_part2() {
-        let test_cases = [
-            TestCase {
-                input: "(())",
-                expected: None,
-            },
-            TestCase {
-                input: "()()",
-                expected: None,
-            },
-            TestCase {
-                input: "(((",
-                expected: None,
-            },
-            TestCase {
-                input: "(()(()(",
-                expected: None,
-            },
-            TestCase {
-                input: "))(((((",
-                expected: Some(1),
-            },
-            TestCase {
-                input: "())",
-                expected: Some(3),
-            },
-            TestCase {
-                input: "))(",
-                expected: Some(1),
-            },
-            TestCase {
-                input: ")))",
-                expected: Some(1),
-            },
-            TestCase {
-                input: ")())())",
-                expected: Some(1),
-            },
-        ];
-
-        for TestCase { input, expected } in test_cases.iter() {
-            assert_eq!(follow_directions_to_basement(input), *expected);
-        }
+        run_tests(
+            follow_directions_to_basement,
+            &[
+                TestCase {
+                    input: "(())",
+                    expected: None,
+                },
+                TestCase {
+                    input: "()()",
+                    expected: None,
+                },
+                TestCase {
+                    input: "(((",
+                    expected: None,
+                },
+                TestCase {
+                    input: "(()(()(",
+                    expected: None,
+                },
+                TestCase {
+                    input: "))(((((",
+                    expected: Some(1),
+                },
+                TestCase {
+                    input: "())",
+                    expected: Some(3),
+                },
+                TestCase {
+                    input: "))(",
+                    expected: Some(1),
+                },
+                TestCase {
+                    input: ")))",
+                    expected: Some(1),
+                },
+                TestCase {
+                    input: ")())())",
+                    expected: Some(1),
+                },
+            ],
+        );
     }
 }
