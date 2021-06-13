@@ -12,7 +12,11 @@ fn part1(input: &str) -> u32 {
 
     for line in input.lines() {
         let action = Action::from(line);
-        action.work_part1(&mut lights);
+        match action {
+            Action::On(rect) => rect.work(&mut lights, |_| 1),
+            Action::Off(rect) => rect.work(&mut lights, |_| 0),
+            Action::Toggle(rect) => rect.work(&mut lights, |v| 1 - v),
+        }
     }
     lights.iter().sum()
 }
@@ -22,7 +26,11 @@ fn part2(input: &str) -> u32 {
 
     for line in input.lines() {
         let action = Action::from(line);
-        action.work_part2(&mut lights);
+        match action {
+            Action::On(rect) => rect.work(&mut lights, |v| v + 1),
+            Action::Off(rect) => rect.work(&mut lights, |v| if v == 0 { 0 } else { v - 1 }),
+            Action::Toggle(rect) => rect.work(&mut lights, |v| v + 2),
+        }
     }
     lights.iter().sum()
 }
@@ -38,6 +46,21 @@ struct Coordinate {
 struct Rectangle {
     lower_left: Coordinate,
     upper_right: Coordinate,
+}
+
+fn compute_light_index(x: usize, y: usize) -> usize {
+    x + (y * 1000)
+}
+
+impl Rectangle {
+    fn work(&self, lights: &mut [u32], work_fn: fn(u32) -> u32) {
+        for x in self.lower_left.x..=self.upper_right.x {
+            for y in self.lower_left.y..=self.upper_right.y {
+                let light_index = compute_light_index(x, y);
+                lights[light_index] = work_fn(lights[light_index]);
+            }
+        }
+    }
 }
 
 enum Action {
@@ -71,37 +94,6 @@ impl From<&str> for Action {
             "turn off" => Action::Off(rect),
             "toggle" => Action::Toggle(rect),
             _ => panic!("Unknown command: {}", command),
-        }
-    }
-}
-
-fn compute_light_index(x: usize, y: usize) -> usize {
-    x + (y * 1000)
-}
-
-fn do_work_in_rect(rect: &Rectangle, lights: &mut [u32], work_fn: fn(u32) -> u32) {
-    for x in rect.lower_left.x..=rect.upper_right.x {
-        for y in rect.lower_left.y..=rect.upper_right.y {
-            let light_index = compute_light_index(x, y);
-            lights[light_index] = work_fn(lights[light_index]);
-        }
-    }
-}
-
-impl Action {
-    fn work_part1(&self, lights: &mut [u32]) {
-        match self {
-            Action::On(rect) => do_work_in_rect(&rect, lights, |_| 1),
-            Action::Off(rect) => do_work_in_rect(&rect, lights, |_| 0),
-            Action::Toggle(rect) => do_work_in_rect(&rect, lights, |v| 1 - v),
-        }
-    }
-
-    fn work_part2(&self, lights: &mut [u32]) {
-        match self {
-            Action::On(rect) => do_work_in_rect(&rect, lights, |v| v + 1),
-            Action::Off(rect) => do_work_in_rect(&rect, lights, |v| if v == 0 { 0 } else { v - 1 }),
-            Action::Toggle(rect) => do_work_in_rect(&rect, lights, |v| v + 2),
         }
     }
 }
