@@ -1,4 +1,4 @@
-const INPUT: &str = include_str!("inputs/day01.txt");
+const INPUT: &str = include_str!("day01.txt");
 
 fn main() {
     println!("Day 01 Part 1: {}", follow_directions(INPUT));
@@ -37,7 +37,7 @@ fn follow_directions_to_basement(directions: &str) -> Option<usize> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use aoc2015::test_support::{run_tests, TestCase};
+    use test_support::test_support::{run_tests, TestCase};
 
     #[test]
     fn test_empty_part1() {
