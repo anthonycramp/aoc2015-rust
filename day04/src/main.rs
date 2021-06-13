@@ -29,7 +29,7 @@ fn find_hash(key: &str, digest_prefix: &str) -> u32 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use aoc2015::test_support::TestCase;
+    use test_support::test_support::TestCase;
 
     #[test]
     fn test_part1() {

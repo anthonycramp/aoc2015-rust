@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-const INPUT: &str = include_str!("inputs/day03.txt");
+const INPUT: &str = include_str!("day03.txt");
 
 fn main() {
     println!("Day 03 Part 1: {}", part1(INPUT));
@@ -53,7 +53,7 @@ fn get_houses_delivered_with_robo_santa(input: &str) -> HashSet<Location> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use aoc2015::test_support::TestCase;
+    use test_support::test_support::TestCase;
 
     #[test]
     fn test_part1() {

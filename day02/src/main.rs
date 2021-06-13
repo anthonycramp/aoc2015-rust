@@ -3,7 +3,7 @@ use regex::Regex;
 #[macro_use]
 extern crate lazy_static;
 
-const INPUT: &str = include_str!("inputs/day02.txt");
+const INPUT: &str = include_str!("day02.txt");
 
 fn main() {
     println!("Day 02 Part 1: {}", part1(INPUT));
@@ -86,7 +86,7 @@ impl From<&str> for BoxDimensions {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use aoc2015::test_support::TestCase;
+    use test_support::test_support::TestCase;
 
     #[test]
     fn test_parse_box_dimensions() {

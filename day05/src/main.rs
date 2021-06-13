@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-const INPUT: &str = include_str!("inputs/day05.txt");
+const INPUT: &str = include_str!("day05.txt");
 
 fn main() {
     println!("Day 05 Part 1: {}", part1(INPUT));
@@ -117,7 +117,7 @@ fn part2(input: &str) -> u32 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use aoc2015::test_support::TestCase;
+    use test_support::test_support::TestCase;
 
     #[test]
     fn test_part1() {
