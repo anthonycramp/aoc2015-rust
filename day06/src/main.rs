@@ -4,16 +4,27 @@ const INPUT: &str = include_str!("day06.txt");
 
 fn main() {
     println!("Day 06 Part 1: {}", part1(INPUT));
+    println!("Day 06 Part 2: {}", part2(INPUT));
 }
 
 fn part1(input: &str) -> u32 {
-    let mut lights = [0u8; 1_000_000];
+    let mut lights = [0u32; 1_000_000];
 
     for line in input.lines() {
         let action = Action::from(line);
-        action.work(&mut lights);
+        action.work_part1(&mut lights);
     }
-    lights.iter().map(|&v| v as u32).sum()
+    lights.iter().sum()
+}
+
+fn part2(input: &str) -> u32 {
+    let mut lights = [0u32; 1_000_000];
+
+    for line in input.lines() {
+        let action = Action::from(line);
+        action.work_part2(&mut lights);
+    }
+    lights.iter().sum()
 }
 
 #[macro_use]
@@ -68,7 +79,7 @@ fn compute_light_index(x: usize, y: usize) -> usize {
     x + (y * 1000)
 }
 
-fn do_work_in_rect(rect: &Rectangle, lights: &mut [u8], work_fn: fn(u8) -> u8) {
+fn do_work_in_rect(rect: &Rectangle, lights: &mut [u32], work_fn: fn(u32) -> u32) {
     for x in rect.lower_left.x..=rect.upper_right.x {
         for y in rect.lower_left.y..=rect.upper_right.y {
             let light_index = compute_light_index(x, y);
@@ -78,11 +89,19 @@ fn do_work_in_rect(rect: &Rectangle, lights: &mut [u8], work_fn: fn(u8) -> u8) {
 }
 
 impl Action {
-    fn work(&self, lights: &mut [u8]) {
+    fn work_part1(&self, lights: &mut [u32]) {
         match self {
             Action::On(rect) => do_work_in_rect(&rect, lights, |_| 1),
             Action::Off(rect) => do_work_in_rect(&rect, lights, |_| 0),
             Action::Toggle(rect) => do_work_in_rect(&rect, lights, |v| 1 - v),
+        }
+    }
+
+    fn work_part2(&self, lights: &mut [u32]) {
+        match self {
+            Action::On(rect) => do_work_in_rect(&rect, lights, |v| v + 1),
+            Action::Off(rect) => do_work_in_rect(&rect, lights, |v| if v == 0 { 0 } else { v - 1 }),
+            Action::Toggle(rect) => do_work_in_rect(&rect, lights, |v| v + 2),
         }
     }
 }
