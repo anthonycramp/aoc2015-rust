@@ -1,5 +1,21 @@
 use regex::Regex;
 
+const INPUT: &str = include_str!("day06.txt");
+
+fn main() {
+    println!("Day 06 Part 1: {}", part1(INPUT));
+}
+
+fn part1(input: &str) -> u32 {
+    let mut lights = [0u8; 1_000_000];
+
+    for line in input.lines() {
+        let action = Action::from(line);
+        action.work(&mut lights);
+    }
+    lights.iter().map(|&v| v as u32).sum()
+}
+
 #[macro_use]
 extern crate lazy_static;
 
@@ -48,8 +64,36 @@ impl From<&str> for Action {
     }
 }
 
-fn main() {
-    Action::from("turn on 0,0 through 999,999");
+fn compute_light_index(x: usize, y: usize) -> usize {
+    x + (y * 1000)
+}
+
+impl Action {
+    fn work(&self, lights: &mut [u8]) {
+        match self {
+            Action::On(rect) => {
+                for x in rect.lower_left.x..=rect.upper_right.x {
+                    for y in rect.lower_left.y..=rect.upper_right.y {
+                        lights[compute_light_index(x, y)] = 1;
+                    }
+                }
+            }
+            Action::Off(rect) => {
+                for x in rect.lower_left.x..=rect.upper_right.x {
+                    for y in rect.lower_left.y..=rect.upper_right.y {
+                        lights[compute_light_index(x, y)] = 0;
+                    }
+                }
+            }
+            Action::Toggle(rect) => {
+                for x in rect.lower_left.x..=rect.upper_right.x {
+                    for y in rect.lower_left.y..=rect.upper_right.y {
+                        lights[compute_light_index(x, y)] = 1 - lights[compute_light_index(x, y)];
+                    }
+                }
+            }
+        }
+    }
 }
 
 #[cfg(test)]
