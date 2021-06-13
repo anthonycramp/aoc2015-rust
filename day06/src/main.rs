@@ -68,30 +68,21 @@ fn compute_light_index(x: usize, y: usize) -> usize {
     x + (y * 1000)
 }
 
+fn do_work_in_rect(rect: &Rectangle, lights: &mut [u8], work_fn: fn(u8) -> u8) {
+    for x in rect.lower_left.x..=rect.upper_right.x {
+        for y in rect.lower_left.y..=rect.upper_right.y {
+            let light_index = compute_light_index(x, y);
+            lights[light_index] = work_fn(lights[light_index]);
+        }
+    }
+}
+
 impl Action {
     fn work(&self, lights: &mut [u8]) {
         match self {
-            Action::On(rect) => {
-                for x in rect.lower_left.x..=rect.upper_right.x {
-                    for y in rect.lower_left.y..=rect.upper_right.y {
-                        lights[compute_light_index(x, y)] = 1;
-                    }
-                }
-            }
-            Action::Off(rect) => {
-                for x in rect.lower_left.x..=rect.upper_right.x {
-                    for y in rect.lower_left.y..=rect.upper_right.y {
-                        lights[compute_light_index(x, y)] = 0;
-                    }
-                }
-            }
-            Action::Toggle(rect) => {
-                for x in rect.lower_left.x..=rect.upper_right.x {
-                    for y in rect.lower_left.y..=rect.upper_right.y {
-                        lights[compute_light_index(x, y)] = 1 - lights[compute_light_index(x, y)];
-                    }
-                }
-            }
+            Action::On(rect) => do_work_in_rect(&rect, lights, |_| 1),
+            Action::Off(rect) => do_work_in_rect(&rect, lights, |_| 0),
+            Action::Toggle(rect) => do_work_in_rect(&rect, lights, |v| 1 - v),
         }
     }
 }
