@@ -78,3 +78,18 @@ loop {
     }
 }
 ```
+
+## 2021-06-14
+
+I began implementing the above but am not completely comfortable with it. This
+is partly due to my Rust familiarity. I have an idea of how I'd tackle this in
+C++, but how to handle mutable HashMap entries in Rust is still very stochastic
+for me.
+
+I'm going to step back and take it one step at a time instead of trying to do an
+up front desing. I'll start with parsing the input.
+
+There will be one top level regex to split the left and right of the ->. Then,
+two other regex's will parse the left hand side.
+
+Parse into a generic struct to start with.

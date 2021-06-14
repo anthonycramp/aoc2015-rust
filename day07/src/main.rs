@@ -6,18 +6,9 @@ fn main() {
     println!("Hello, world!");
 }
 
-#[derive(Hash, Eq, PartialEq)]
-struct Wire {
-    identifier: &'static str,
-}
-
-struct Value {
-    value: u16,
-}
-
 enum Input {
-    Wire(Wire),
-    Value(Value),
+    Wire(&'static str),
+    Value(u16),
 }
 
 struct Binary {
@@ -29,17 +20,13 @@ struct Unary {
     op: Input,
 }
 
-struct Constant {
-    value: Value,
-}
-
 enum LogicGate {
     And(Binary),
     Or(Binary),
     Lshift(Binary),
     Rshift(Binary),
     Not(Unary),
-    Signal(Constant),
+    Signal(u16),
 }
 
 impl LogicGate {
@@ -49,7 +36,7 @@ impl LogicGate {
 }
 
 struct Circuit {
-    circuit: HashMap<Wire, LogicGate>,
+    circuit: HashMap<&'static str, LogicGate>,
 }
 
 impl From<&str> for Circuit {
@@ -62,9 +49,9 @@ impl From<&str> for Circuit {
 
 impl Circuit {
     fn wire(&self, identifier: &'static str) -> Option<u16> {
-        match self.circuit.get(&Wire { identifier }) {
+        match self.circuit.get(identifier) {
             Some(gate) => match gate {
-                LogicGate::Signal(c) => Some(c.value.value),
+                LogicGate::Signal(c) => Some(*c),
                 _ => None,
             },
             None => None,
