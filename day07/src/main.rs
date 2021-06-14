@@ -1,4 +1,5 @@
 use regex::Regex;
+use std::collections::HashMap;
 
 #[macro_use]
 extern crate lazy_static;
@@ -9,7 +10,7 @@ fn main() {
     println!("Hello, world!");
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 enum LogicGate {
     And,
     Or,
@@ -19,12 +20,13 @@ enum LogicGate {
     Constant,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 enum Input {
     Wire(String),
     Signal(u16),
 }
 
+#[derive(Debug, Clone)]
 struct Gate {
     output_wire: String,
     gate_type: LogicGate,
@@ -102,6 +104,24 @@ impl From<&'static str> for Gate {
     }
 }
 
+struct Circuit {
+    gates_by_output_wire: HashMap<String, Gate>,
+}
+
+impl From<&'static str> for Circuit {
+    fn from(input: &'static str) -> Self {
+        let mut gates_by_output_wire = HashMap::new();
+
+        for line in input.lines() {
+            let gate = Gate::from(line);
+            gates_by_output_wire.insert(gate.output_wire.clone(), gate.clone());
+        }
+
+        Self {
+            gates_by_output_wire,
+        }
+    }
+}
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -161,7 +181,8 @@ y RSHIFT 2 -> g
 NOT x -> h
 NOT y -> i";
 
-        // let mut circuit = Circuit::from(input);
+        let circuit = Circuit::from(input);
+        assert_eq!(circuit.gates_by_output_wire.len(), 8);
         // circuit.reduce();
 
         // assert_eq!(circuit.wire("d").unwrap(), 72);
