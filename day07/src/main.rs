@@ -122,6 +122,27 @@ impl From<&'static str> for Circuit {
         }
     }
 }
+
+impl Circuit {
+    /// Return the value of the signal on the specified wire if it has
+    /// already been computed. Otherwise return None.
+    fn wire(&self, wire_id: &str) -> Option<u16> {
+        if let Some(gate) = self.gates_by_output_wire.get(&String::from(wire_id)) {
+            match gate.gate_type {
+                LogicGate::Constant => match gate.input1 {
+                    Input::Signal(v) => Some(v),
+                    _ => None,
+                },
+                _ => None,
+            }
+        } else {
+            None
+        }
+    }
+
+    fn solve(&mut self) {}
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -181,17 +202,17 @@ y RSHIFT 2 -> g
 NOT x -> h
 NOT y -> i";
 
-        let circuit = Circuit::from(input);
+        let mut circuit = Circuit::from(input);
         assert_eq!(circuit.gates_by_output_wire.len(), 8);
-        // circuit.reduce();
+        circuit.solve();
 
-        // assert_eq!(circuit.wire("d").unwrap(), 72);
-        // assert_eq!(circuit.wire("e").unwrap(), 507);
-        // assert_eq!(circuit.wire("f").unwrap(), 492);
-        // assert_eq!(circuit.wire("g").unwrap(), 114);
-        // assert_eq!(circuit.wire("h").unwrap(), 65412);
-        // assert_eq!(circuit.wire("i").unwrap(), 65079);
-        // assert_eq!(circuit.wire("x").unwrap(), 123);
-        // assert_eq!(circuit.wire("y").unwrap(), 456);
+        assert_eq!(circuit.wire("d").unwrap(), 72);
+        assert_eq!(circuit.wire("e").unwrap(), 507);
+        assert_eq!(circuit.wire("f").unwrap(), 492);
+        assert_eq!(circuit.wire("g").unwrap(), 114);
+        assert_eq!(circuit.wire("h").unwrap(), 65412);
+        assert_eq!(circuit.wire("i").unwrap(), 65079);
+        assert_eq!(circuit.wire("x").unwrap(), 123);
+        assert_eq!(circuit.wire("y").unwrap(), 456);
     }
 }
