@@ -19,11 +19,17 @@ enum LogicGate {
     Constant,
 }
 
+#[derive(Debug, PartialEq)]
+enum Input {
+    Wire(String),
+    Signal(u16),
+}
+
 struct ParsedInput {
     output_wire: String,
     gate_type: LogicGate,
-    op1: String,
-    op2: Option<String>,
+    input1: Input,
+    input2: Option<Input>,
 }
 
 impl From<&'static str> for ParsedInput {
@@ -39,7 +45,7 @@ impl From<&'static str> for ParsedInput {
         if let Some(lhs) = LHS_BINARY_RE.captures(fields.get(1).unwrap().as_str()) {
             let output_wire = String::from(fields.get(2).unwrap().as_str());
             let op1 = String::from(lhs.get(1).unwrap().as_str());
-            let op2 = Some(String::from(lhs.get(3).unwrap().as_str()));
+            let op2 = String::from(lhs.get(3).unwrap().as_str());
             let gate_type_str = lhs.get(2).unwrap().as_str();
             let gate_type = match gate_type_str {
                 "AND" => LogicGate::And,
@@ -49,25 +55,48 @@ impl From<&'static str> for ParsedInput {
                 _ => panic!("Unknown gate specified: {}", gate_type_str),
             };
 
+            let input1 = if let Ok(v) = op1.parse::<u16>() {
+                Input::Signal(v)
+            } else {
+                Input::Wire(op1)
+            };
+
+            let input2 = Some(if let Ok(v) = op2.parse::<u16>() {
+                Input::Signal(v)
+            } else {
+                Input::Wire(op2)
+            });
+
             ParsedInput {
                 output_wire,
                 gate_type,
-                op1,
-                op2,
+                input1,
+                input2,
             }
         } else if let Some(lhs) = LHS_UNARY_RE.captures(fields.get(1).unwrap().as_str()) {
+            let op1 = String::from(lhs.get(2).unwrap().as_str());
+            let input1 = if let Ok(v) = op1.parse::<u16>() {
+                Input::Signal(v)
+            } else {
+                Input::Wire(op1)
+            };
+
             ParsedInput {
                 output_wire: String::from(fields.get(2).unwrap().as_str()),
                 gate_type: LogicGate::Not,
-                op1: String::from(lhs.get(2).unwrap().as_str()),
-                op2: None,
+                input1: input1,
+                input2: None,
             }
         } else {
             ParsedInput {
                 output_wire: String::from(fields.get(2).unwrap().as_str()),
                 gate_type: LogicGate::Constant,
-                op1: String::from(fields.get(1).unwrap().as_str()),
-                op2: None,
+                input1: Input::Signal(
+                    String::from(fields.get(1).unwrap().as_str())
+                        .parse()
+                        .unwrap(),
+                ),
+                input2: None,
             }
         }
     }
@@ -84,8 +113,8 @@ mod tests {
 
         assert_eq!(parsed_input.output_wire, String::from("d"));
         assert_eq!(parsed_input.gate_type, LogicGate::And);
-        assert_eq!(parsed_input.op1, String::from("x"));
-        assert_eq!(parsed_input.op2, Some(String::from("y")));
+        assert_eq!(parsed_input.input1, Input::Wire(String::from("x")));
+        assert_eq!(parsed_input.input2, Some(Input::Wire(String::from("y"))));
     }
 
     #[test]
@@ -95,8 +124,8 @@ mod tests {
 
         assert_eq!(parsed_input.output_wire, String::from("h"));
         assert_eq!(parsed_input.gate_type, LogicGate::Not);
-        assert_eq!(parsed_input.op1, String::from("x"));
-        assert_eq!(parsed_input.op2, None);
+        assert_eq!(parsed_input.input1, Input::Wire(String::from("x")));
+        assert_eq!(parsed_input.input2, None);
     }
 
     #[test]
@@ -106,8 +135,19 @@ mod tests {
 
         assert_eq!(parsed_input.output_wire, String::from("x"));
         assert_eq!(parsed_input.gate_type, LogicGate::Constant);
-        assert_eq!(parsed_input.op1, String::from("123"));
-        assert_eq!(parsed_input.op2, None);
+        assert_eq!(parsed_input.input1, Input::Signal(123));
+        assert_eq!(parsed_input.input2, None);
+    }
+
+    #[test]
+    fn test_parse_lshift() {
+        let input = "x LSHIFT 2 -> f";
+        let parsed_input = ParsedInput::from(input);
+
+        assert_eq!(parsed_input.output_wire, String::from("f"));
+        assert_eq!(parsed_input.gate_type, LogicGate::Lshift);
+        assert_eq!(parsed_input.input1, Input::Wire(String::from("x")));
+        assert_eq!(parsed_input.input2, Some(Input::Signal(2)));
     }
 
     #[test]
