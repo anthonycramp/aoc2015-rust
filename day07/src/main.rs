@@ -25,14 +25,14 @@ enum Input {
     Signal(u16),
 }
 
-struct ParsedInput {
+struct Gate {
     output_wire: String,
     gate_type: LogicGate,
     input1: Input,
     input2: Option<Input>,
 }
 
-impl From<&'static str> for ParsedInput {
+impl From<&'static str> for Gate {
     fn from(input: &'static str) -> Self {
         lazy_static! {
             static ref TOP_RE: Regex = Regex::new(r"(.*) -> (.*)").unwrap();
@@ -67,7 +67,7 @@ impl From<&'static str> for ParsedInput {
                 Input::Wire(op2)
             });
 
-            ParsedInput {
+            Self {
                 output_wire,
                 gate_type,
                 input1,
@@ -81,14 +81,14 @@ impl From<&'static str> for ParsedInput {
                 Input::Wire(op1)
             };
 
-            ParsedInput {
+            Self {
                 output_wire: String::from(fields.get(2).unwrap().as_str()),
                 gate_type: LogicGate::Not,
                 input1: input1,
                 input2: None,
             }
         } else {
-            ParsedInput {
+            Self {
                 output_wire: String::from(fields.get(2).unwrap().as_str()),
                 gate_type: LogicGate::Constant,
                 input1: Input::Signal(
@@ -109,7 +109,7 @@ mod tests {
     #[test]
     fn test_parse_binary_gate() {
         let input = "x AND y -> d";
-        let parsed_input = ParsedInput::from(input);
+        let parsed_input = Gate::from(input);
 
         assert_eq!(parsed_input.output_wire, String::from("d"));
         assert_eq!(parsed_input.gate_type, LogicGate::And);
@@ -120,7 +120,7 @@ mod tests {
     #[test]
     fn test_parse_unary_gate() {
         let input = "NOT x -> h";
-        let parsed_input = ParsedInput::from(input);
+        let parsed_input = Gate::from(input);
 
         assert_eq!(parsed_input.output_wire, String::from("h"));
         assert_eq!(parsed_input.gate_type, LogicGate::Not);
@@ -131,7 +131,7 @@ mod tests {
     #[test]
     fn test_parse_constant() {
         let input = "123 -> x";
-        let parsed_input = ParsedInput::from(input);
+        let parsed_input = Gate::from(input);
 
         assert_eq!(parsed_input.output_wire, String::from("x"));
         assert_eq!(parsed_input.gate_type, LogicGate::Constant);
@@ -142,7 +142,7 @@ mod tests {
     #[test]
     fn test_parse_lshift() {
         let input = "x LSHIFT 2 -> f";
-        let parsed_input = ParsedInput::from(input);
+        let parsed_input = Gate::from(input);
 
         assert_eq!(parsed_input.output_wire, String::from("f"));
         assert_eq!(parsed_input.gate_type, LogicGate::Lshift);
