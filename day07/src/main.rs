@@ -104,6 +104,7 @@ impl From<&'static str> for Gate {
     }
 }
 
+#[derive(Clone)]
 struct Circuit {
     gates_by_output_wire: HashMap<String, Gate>,
 }
@@ -140,7 +141,70 @@ impl Circuit {
         }
     }
 
-    fn solve(&mut self) {}
+    fn solve(&mut self) {
+        // infinite loop until the circuit doesn't change any further
+        loop {
+            let mut circuit_changed = false;
+
+            // iterate through the circuit
+            // try to resolve any non-Signal logic gates by
+            // looking up the input wires in the circuit
+            // we'll use a copy of the circuit to look up wires
+            let circuit_copy = self.clone();
+
+            for (_, value) in self.gates_by_output_wire.iter_mut() {
+                // value will have one or two inputs, each of which may be
+                // a wire or a signal. If it is a wire, we want to look it
+                // up to see if it resolves to a signal. Ultimately, we want
+                // one or two signals to proceed to application of gate function
+                // let's skip if value is a signal
+                if LogicGate::Constant == value.gate_type {
+                    continue;
+                }
+
+                let input1 = match &value.input1 {
+                    Input::Wire(w) => circuit_copy.wire(&w),
+                    Input::Signal(v) => Some(*v),
+                };
+
+                let input2 = match &value.input2 {
+                    Some(input) => match input {
+                        Input::Wire(w) => circuit_copy.wire(&w),
+                        Input::Signal(v) => Some(*v),
+                    },
+                    _ => None,
+                };
+
+                match (input1, input2) {
+                    (Some(v1), Some(v2)) => {
+                        circuit_changed = true;
+                        match &value.gate_type {
+                            LogicGate::And => (*value).input1 = Input::Signal(v1 & v2),
+                            LogicGate::Or => (*value).input1 = Input::Signal(v1 | v2),
+                            LogicGate::Lshift => (*value).input1 = Input::Signal(v1 << v2),
+                            LogicGate::Rshift => (*value).input1 = Input::Signal(v1 >> v2),
+                            _ => panic!("Expected a binary logic gate: {:?}", value),
+                        }
+                        (*value).input2 = None;
+                        (*value).gate_type = LogicGate::Constant;
+                    }
+                    (Some(v1), None) => match &value.gate_type {
+                        LogicGate::Not => {
+                            circuit_changed = true;
+                            (*value).input1 = Input::Signal(!v1);
+                            (*value).gate_type = LogicGate::Constant;
+                        }
+                        _ => panic!("Expected a unary logic gate"),
+                    },
+                    _ => (),
+                }
+            }
+
+            if !circuit_changed {
+                break;
+            }
+        }
+    }
 }
 
 #[cfg(test)]
@@ -188,6 +252,17 @@ mod tests {
         assert_eq!(parsed_input.output_wire, String::from("f"));
         assert_eq!(parsed_input.gate_type, LogicGate::Lshift);
         assert_eq!(parsed_input.input1, Input::Wire(String::from("x")));
+        assert_eq!(parsed_input.input2, Some(Input::Signal(2)));
+    }
+
+    #[test]
+    fn test_parse_rshift() {
+        let input = "y RSHIFT 2 -> g";
+        let parsed_input = Gate::from(input);
+
+        assert_eq!(parsed_input.output_wire, String::from("g"));
+        assert_eq!(parsed_input.gate_type, LogicGate::Rshift);
+        assert_eq!(parsed_input.input1, Input::Wire(String::from("y")));
         assert_eq!(parsed_input.input2, Some(Input::Signal(2)));
     }
 
