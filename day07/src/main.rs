@@ -7,7 +7,13 @@ extern crate lazy_static;
 const INPUT: &'static str = include_str!("day07.txt");
 
 fn main() {
-    println!("Hello, world!");
+    println!("Day 07 Part 1: {}", part1(INPUT));
+}
+
+fn part1(input: &'static str) -> u16 {
+    let mut circuit = Circuit::from(input);
+    circuit.solve();
+    circuit.wire("a").unwrap()
 }
 
 #[derive(Debug, PartialEq, Clone)]
@@ -114,6 +120,7 @@ impl From<&'static str> for Circuit {
         let mut gates_by_output_wire = HashMap::new();
 
         for line in input.lines() {
+            println!("{}", line);
             let gate = Gate::from(line);
             gates_by_output_wire.insert(gate.output_wire.clone(), gate.clone());
         }
