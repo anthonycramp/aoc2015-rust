@@ -41,6 +41,16 @@ impl Input {
     }
 }
 
+impl From<&String> for Input {
+    fn from(input: &String) -> Self {
+        if let Ok(v) = input.parse::<u16>() {
+            Input::Signal(v)
+        } else {
+            Input::Wire(input.clone())
+        }
+    }
+}
+
 #[derive(Debug, Clone)]
 struct Gate {
     output_wire: String,
@@ -72,17 +82,8 @@ impl From<&'static str> for Gate {
                 _ => panic!("Unknown gate specified: {}", gate_type_str),
             };
 
-            let input1 = if let Ok(v) = op1.parse::<u16>() {
-                Input::Signal(v)
-            } else {
-                Input::Wire(op1)
-            };
-
-            let input2 = Some(if let Ok(v) = op2.parse::<u16>() {
-                Input::Signal(v)
-            } else {
-                Input::Wire(op2)
-            });
+            let input1 = Input::from(&op1);
+            let input2 = Some(Input::from(&op2));
 
             Self {
                 output_wire,
@@ -92,11 +93,7 @@ impl From<&'static str> for Gate {
             }
         } else if let Some(lhs) = LHS_UNARY_RE.captures(fields.get(1).unwrap().as_str()) {
             let op1 = String::from(lhs.get(2).unwrap().as_str());
-            let input1 = if let Ok(v) = op1.parse::<u16>() {
-                Input::Signal(v)
-            } else {
-                Input::Wire(op1)
-            };
+            let input1 = Input::from(&op1);
 
             Self {
                 output_wire: String::from(fields.get(2).unwrap().as_str()),
@@ -106,11 +103,7 @@ impl From<&'static str> for Gate {
             }
         } else {
             let op1 = String::from(fields.get(1).unwrap().as_str());
-            let input1 = if let Ok(v) = fields.get(1).unwrap().as_str().parse() {
-                Input::Signal(v)
-            } else {
-                Input::Wire(op1)
-            };
+            let input1 = Input::from(&op1);
             Self {
                 output_wire: String::from(fields.get(2).unwrap().as_str()),
                 gate_type: LogicGate::Constant,
