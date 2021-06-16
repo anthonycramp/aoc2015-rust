@@ -67,3 +67,5 @@ mod tests {
 
 - Add `test_support = {path="../test_support"}` to the `dependencies` in
   `dayNN/Cargo.toml` (depending on the problem, this might not be used)
+- Add `dayNN/notes.md` to capture thoughts and reflections on the problem and
+  Rust features
