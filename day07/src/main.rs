@@ -8,10 +8,19 @@ const INPUT: &'static str = include_str!("day07.txt");
 
 fn main() {
     println!("Day 07 Part 1: {}", part1(INPUT));
+    println!("Day 07 Part 2: {}", part2(INPUT));
 }
 
 fn part1(input: &'static str) -> u16 {
     let mut circuit = Circuit::from(input);
+    circuit.solve();
+    circuit.wire("a").unwrap()
+}
+
+fn part2(input: &'static str) -> u16 {
+    let part1_output = part1(input);
+    let mut circuit = Circuit::from(input);
+    circuit.set_wire("b", part1_output);
     circuit.solve();
     circuit.wire("a").unwrap()
 }
@@ -149,6 +158,18 @@ impl Circuit {
         } else {
             None
         }
+    }
+
+    fn set_wire(&mut self, wire_id: &str, signal: u16) {
+        self.gates_by_output_wire.insert(
+            String::from(wire_id),
+            Gate {
+                output_wire: String::from(wire_id),
+                gate_type: LogicGate::Constant,
+                input1: Input::Signal(signal),
+                input2: None,
+            },
+        );
     }
 
     fn solve(&mut self) {
