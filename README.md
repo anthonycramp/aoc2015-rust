@@ -39,7 +39,7 @@ fn part2(input: &str) -> i32 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use test_support::test_supprt::TestCase;
+    use test_support::test_support::TestCase;
 
     #[test]
     fn test_part1() {
