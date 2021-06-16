@@ -32,6 +32,15 @@ enum Input {
     Signal(u16),
 }
 
+impl Input {
+    fn is_signal(&self) -> bool {
+        match self {
+            Input::Wire(_) => false,
+            Input::Signal(_) => true,
+        }
+    }
+}
+
 #[derive(Debug, Clone)]
 struct Gate {
     output_wire: String,
@@ -96,14 +105,16 @@ impl From<&'static str> for Gate {
                 input2: None,
             }
         } else {
+            let op1 = String::from(fields.get(1).unwrap().as_str());
+            let input1 = if let Ok(v) = fields.get(1).unwrap().as_str().parse() {
+                Input::Signal(v)
+            } else {
+                Input::Wire(op1)
+            };
             Self {
                 output_wire: String::from(fields.get(2).unwrap().as_str()),
                 gate_type: LogicGate::Constant,
-                input1: Input::Signal(
-                    String::from(fields.get(1).unwrap().as_str())
-                        .parse()
-                        .unwrap(),
-                ),
+                input1: input1,
                 input2: None,
             }
         }
@@ -120,7 +131,6 @@ impl From<&'static str> for Circuit {
         let mut gates_by_output_wire = HashMap::new();
 
         for line in input.lines() {
-            println!("{}", line);
             let gate = Gate::from(line);
             gates_by_output_wire.insert(gate.output_wire.clone(), gate.clone());
         }
@@ -165,7 +175,7 @@ impl Circuit {
                 // up to see if it resolves to a signal. Ultimately, we want
                 // one or two signals to proceed to application of gate function
                 // let's skip if value is a signal
-                if LogicGate::Constant == value.gate_type {
+                if LogicGate::Constant == value.gate_type && value.input1.is_signal() {
                     continue;
                 }
 
@@ -201,7 +211,11 @@ impl Circuit {
                             (*value).input1 = Input::Signal(!v1);
                             (*value).gate_type = LogicGate::Constant;
                         }
-                        _ => panic!("Expected a unary logic gate"),
+                        LogicGate::Constant => {
+                            circuit_changed = true;
+                            (*value).input1 = Input::Signal(v1);
+                        }
+                        _ => (),
                     },
                     _ => (),
                 }
