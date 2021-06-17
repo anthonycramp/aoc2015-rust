@@ -12,3 +12,13 @@
 - Generate all permutations of the place names
 - Walk each permutation two at a time, looking up distances, and aumming the
   result
+
+## Reflection
+
+Went largely as I'd planned above. Still relying on the compiler to tell me when
+something is being used after borrow. My solution in most of these cases is to
+just tack `.clone()` everywhere.
+
+Need to think about using `.cloned()` on an iterator to go from `Item=&T` to
+`Item=T`. In the case, I can remove `.cloned()` by changing the first parameter
+of `compute_distance` from `&[String]` to `&[&String]`.

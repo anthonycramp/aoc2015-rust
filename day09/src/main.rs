@@ -17,7 +17,6 @@ fn part1(input: &str) -> i32 {
     let (routes, places) = parse_routes(input);
     places
         .iter()
-        .cloned()
         .permutations(places.len())
         .map(|place_seq| compute_distance(&place_seq, &routes))
         .min()
@@ -26,7 +25,13 @@ fn part1(input: &str) -> i32 {
 
 // replace return type as required by the problem
 fn part2(input: &str) -> i32 {
-    0
+    let (routes, places) = parse_routes(input);
+    places
+        .iter()
+        .permutations(places.len())
+        .map(|place_seq| compute_distance(&place_seq, &routes))
+        .max()
+        .unwrap()
 }
 
 fn parse_route(input: &str) -> ((String, String), i32) {
@@ -59,7 +64,7 @@ fn parse_routes(input: &str) -> (HashMap<(String, String), i32>, HashSet<String>
     (routes, places)
 }
 
-fn compute_distance(place_seq: &[String], routes: &HashMap<(String, String), i32>) -> i32 {
+fn compute_distance(place_seq: &[&String], routes: &HashMap<(String, String), i32>) -> i32 {
     place_seq
         .windows(2)
         .map(|pair| routes.get(&(pair[0].clone(), pair[1].clone())).unwrap())
@@ -86,6 +91,6 @@ Dublin to Belfast = 141";
 London to Belfast = 518
 Dublin to Belfast = 141";
 
-        assert_eq!(part2(input), 605);
+        assert_eq!(part2(input), 982);
     }
 }
