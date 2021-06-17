@@ -35,26 +35,16 @@ fn count_string_chars(input: &str) -> i32 {
     let mut in_escape = false;
     let mut chars_iter = s.chars();
 
-    loop {
-        let c = if let Some(c) = chars_iter.next() {
-            c
-        } else {
-            break;
-        };
-
+    while let Some(c) = chars_iter.next() {
         if !in_escape {
             count += 1;
-            match c {
-                '\\' => in_escape = true,
-                _ => (),
+            if c == '\\' {
+                in_escape = true;
             }
         } else {
-            match c {
-                'x' => {
-                    chars_iter.next();
-                    chars_iter.next();
-                }
-                _ => (),
+            if c == 'x' {
+                chars_iter.next();
+                chars_iter.next();
             }
             in_escape = false;
         }
@@ -72,7 +62,7 @@ fn encode_string(input: &str) -> String {
         };
         out.push_str(&encoding);
     }
-    out.push_str("\"");
+    out.push('\"');
     out
 }
 
