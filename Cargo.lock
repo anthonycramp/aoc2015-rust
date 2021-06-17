@@ -73,6 +73,9 @@ dependencies = [
 [[package]]
 name = "day09"
 version = "0.1.0"
+dependencies = [
+ "test_support",
+]
 
 [[package]]
 name = "lazy_static"
