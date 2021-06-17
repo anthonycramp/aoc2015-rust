@@ -14,7 +14,7 @@ how, I'll write an app that plugs in to cargo so I can just say something like
 - Add `dayNN` to the workspace members list in `./Cargo.toml`
 - If the problem has a large puzzle input (most days do), create file
   `dayNN/src/dayNN.txt` and copy in the puzzle input
-- Add `const INPUT: &str = include_str!("day08.txt");` to the top of
+- Add `const INPUT: &str = include_str!("dayNN.txt");` to the top of
   `dayNN/main.rs`. If the puzzle input is short (e.g., a single line), then it
   can be assigned directly to `INPUT` instead of reading it out of `dayNN.txt`
   with `include_str!`.
