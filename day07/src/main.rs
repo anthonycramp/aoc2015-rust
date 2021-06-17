@@ -4,7 +4,7 @@ use std::collections::HashMap;
 #[macro_use]
 extern crate lazy_static;
 
-const INPUT: &'static str = include_str!("day07.txt");
+const INPUT: &str = include_str!("day07.txt");
 
 fn main() {
     println!("Day 07 Part 1: {}", part1(INPUT));
@@ -107,7 +107,7 @@ impl From<&'static str> for Gate {
             Self {
                 output_wire: String::from(fields.get(2).unwrap().as_str()),
                 gate_type: LogicGate::Not,
-                input1: input1,
+                input1,
                 input2: None,
             }
         } else {
@@ -116,7 +116,7 @@ impl From<&'static str> for Gate {
             Self {
                 output_wire: String::from(fields.get(2).unwrap().as_str()),
                 gate_type: LogicGate::Constant,
-                input1: input1,
+                input1,
                 input2: None,
             }
         }
