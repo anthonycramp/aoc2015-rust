@@ -6,12 +6,12 @@ fn main() {
 }
 
 // replace return type as required by the problem
-fn part1(input: &str) -> String {
+fn part1(input: &str) -> u64 {
     let mut ret = String::from(input);
     for _ in 1..=40 {
         ret = look_and_say(&ret);
     }
-    ret
+    ret.len() as u64
 }
 
 // replace return type as required by the problem
@@ -20,7 +20,25 @@ fn part2(input: &str) -> String {
 }
 
 fn look_and_say(input: &str) -> String {
-    String::from("")
+    let mut chars = input.chars();
+
+    let mut last_seen = chars.next().unwrap();
+    let mut count = 1;
+    let mut ret = String::new();
+
+    for c in chars {
+        if c != last_seen {
+            ret.push_str(&format!("{}{}", count, last_seen));
+            last_seen = c;
+            count = 1;
+        } else {
+            count += 1;
+        }
+    }
+
+    ret.push_str(&format!("{}{}", count, last_seen));
+
+    ret
 }
 
 #[cfg(test)]
