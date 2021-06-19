@@ -6,23 +6,23 @@ fn main() {
 }
 
 // replace return type as required by the problem
-fn part1(input: &str) -> u64 {
-    let mut ret = String::from(input);
-    for _ in 1..=40 {
-        ret = look_and_say(&ret);
-    }
-    ret.len() as u64
+fn part1(input: &str) -> usize {
+    look_and_say_n(input, 40).len()
 }
 
 // replace return type as required by the problem
 fn part2(input: &str) -> usize {
+    look_and_say_n(input, 50).len()
+}
+
+fn look_and_say_n(input: &str, n: usize) -> String {
     let mut ret = String::from(input);
 
-    for _ in 1..=50 {
+    for _ in 1..=n {
         ret = look_and_say(&ret);
     }
 
-    ret.len()
+    ret
 }
 
 fn look_and_say(input: &str) -> String {
