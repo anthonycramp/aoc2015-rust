@@ -15,8 +15,14 @@ fn part1(input: &str) -> u64 {
 }
 
 // replace return type as required by the problem
-fn part2(input: &str) -> String {
-    String::from(input)
+fn part2(input: &str) -> usize {
+    let mut ret = String::from(input);
+
+    for _ in 1..=50 {
+        ret = look_and_say(&ret);
+    }
+
+    ret.len()
 }
 
 fn look_and_say(input: &str) -> String {
