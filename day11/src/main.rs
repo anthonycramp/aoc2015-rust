@@ -9,16 +9,24 @@ fn main() {
 
 // replace return type as required by the problem
 fn part1(input: &str) -> String {
-    String::default()
+    let mut new_password = String::from(input).increment();
+
+    while !new_password.is_valid_password_part1() {
+        new_password = new_password.increment();
+    }
+
+    new_password
 }
 
 // replace return type as required by the problem
-fn part2(input: &str) -> i32 {
-    0
+fn part2(input: &str) -> String {
+    let new_password = part1(input);
+    // and then get the next one
+    part1(&new_password)
 }
 
 trait Password {
-    fn increment(&mut self);
+    fn increment(self) -> Self;
     fn contains_three_letter_straight(&self) -> bool;
     fn contains_forbidden_characters(&self) -> bool;
     fn contains_different_pairs(&self) -> bool;
@@ -26,27 +34,36 @@ trait Password {
 }
 
 impl Password for String {
-    fn increment(&mut self) {}
+    fn increment(self) -> Self {
+        let mut ret = String::new();
+        let mut bubble_up = true;
+
+        for b in self.bytes().rev() {
+            if bubble_up {
+                if b == b'z' {
+                    ret = String::from("a") + &ret;
+                    bubble_up = true;
+                } else {
+                    let mut new_b = b + 1;
+                    if "ilo".contains(new_b as char) {
+                        // skip illegal characters
+                        new_b += 1;
+                    }
+                    ret = String::from(new_b as char) + &ret;
+                    bubble_up = false;
+                }
+            } else {
+                ret = String::from(b as char) + &ret;
+            }
+        }
+        ret
+    }
 
     fn contains_three_letter_straight(&self) -> bool {
-        let mut bytes = self.bytes();
-        let mut prev_byte = bytes.next().unwrap();
-        let mut run_length = 0;
-        while let Some(b) = bytes.next() {
-            if (b - prev_byte) == 1
-                || (prev_byte == b'h' && b == b'j')
-                || (prev_byte == b'k' && b == b'm')
-                || (prev_byte == b'n' && b == b'p')
-            {
-                run_length += 1;
-            } else {
-                run_length = 0;
-            }
-
-            if run_length == 2 {
+        for straights in self.as_bytes().windows(3) {
+            if straights[2] == (straights[1] + 1) && straights[1] == (straights[0] + 1) {
                 return true;
             }
-            prev_byte = b;
         }
 
         false
@@ -78,6 +95,27 @@ impl Password for String {
 mod tests {
     use super::*;
     use test_support::test_support::TestCase;
+
+    #[test]
+    fn test_increment() {
+        let test_cases = [
+            TestCase {
+                input: "aaaaaaaa",
+                expected: "aaaaaaab",
+            },
+            TestCase {
+                input: "aaaaaaaz",
+                expected: "aaaaaaba",
+            },
+            TestCase {
+                input: "zzzzzzzz",
+                expected: "aaaaaaaa",
+            },
+        ];
+        for TestCase { input, expected } in test_cases.iter() {
+            assert_eq!(String::from(*input).increment(), *expected);
+        }
+    }
 
     #[test]
     fn test_password_contains_three_letter_straight() {
