@@ -21,6 +21,9 @@ how, I'll write an app that plugs in to cargo so I can just say something like
 - Replace the rest of `main.rs` with:
 
 ```rust
+// const INPUT: &str = include_str!("dayNN.txt");
+// const INPUT: &str = "";
+
 fn main() {
     println!("Day NN Part 1: {:?}", part1(INPUT));
     println!("Day NN Part 2: {:?}", part2(INPUT));
@@ -69,3 +72,7 @@ mod tests {
   `dayNN/Cargo.toml` (depending on the problem, this might not be used)
 - Add `dayNN/notes.md` to capture thoughts and reflections on the problem and
   Rust features
+- Run `cargo build -p dayNN` and `cargo test -p dayNN` to trigger an update to
+  `Cargo.lock`
+- `git add dayNN Cargo.toml Cargo.lock` and
+  `git commit -m "Added Day NN skeleton` and `git push`
