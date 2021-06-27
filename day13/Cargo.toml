@@ -6,6 +6,7 @@ version = "0.1.0"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+itertools = "0.10"
 lazy_static = "1.4"
 regex = "1.5"
 test_support = {path = "../test_support"}
