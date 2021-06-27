@@ -14,15 +14,7 @@ fn main() {
 
 // replace return type as required by the problem
 fn part1(input: &str) -> i32 {
-    let mut names: HashSet<String> = HashSet::new();
-    let mut happiness: HashMap<(String, String), i32> = HashMap::new();
-
-    for line in input.lines() {
-        let ((name_a, name_b), happiness_gained) = parse(line);
-        names.insert(name_a.clone());
-        names.insert(name_b.clone());
-        happiness.insert((name_a, name_b), happiness_gained);
-    }
+    let (names, happiness) = parse_seating_data(input);
 
     names
         .iter()
@@ -35,7 +27,22 @@ fn part1(input: &str) -> i32 {
 
 // replace return type as required by the problem
 fn part2(input: &str) -> i32 {
-    0
+    let (mut names, mut happiness) = parse_seating_data(input);
+    let me = String::from("me");
+
+    for name in &names {
+        happiness.insert((name.clone(), me.clone()), 0);
+        happiness.insert((me.clone(), name.clone()), 0);
+    }
+    names.insert(me);
+
+    names
+        .iter()
+        .cloned()
+        .permutations(names.len())
+        .map(|seating| compute_happiness(&seating, &happiness))
+        .max()
+        .unwrap()
 }
 
 fn parse(input: &str) -> ((String, String), i32) {
@@ -60,6 +67,20 @@ fn parse(input: &str) -> ((String, String), i32) {
             panic!("Couldn't parse happiness: {:?}", fields.get(3));
         },
     )
+}
+
+fn parse_seating_data(input: &str) -> (HashSet<String>, HashMap<(String, String), i32>) {
+    let mut names: HashSet<String> = HashSet::new();
+    let mut happiness: HashMap<(String, String), i32> = HashMap::new();
+
+    for line in input.lines() {
+        let ((name_a, name_b), happiness_gained) = parse(line);
+        names.insert(name_a.clone());
+        names.insert(name_b.clone());
+        happiness.insert((name_a, name_b), happiness_gained);
+    }
+
+    (names, happiness)
 }
 
 /// Compute the happiness for a particular seating configuration
@@ -125,22 +146,5 @@ David would gain 41 happiness units by sitting next to Carol.";
         let change_in_happiness = part1(input);
 
         assert_eq!(change_in_happiness, 330);
-    }
-
-    #[test]
-    fn test_part2() {
-        let test_cases = [
-            TestCase {
-                input: "...",
-                expected: 123,
-            },
-            TestCase {
-                input: "abc",
-                expected: 345,
-            },
-        ];
-        for TestCase { input, expected } in test_cases.iter() {
-            assert_eq!(part2(*input), *expected);
-        }
     }
 }
