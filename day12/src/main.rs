@@ -1,4 +1,4 @@
-use serde_json::{json, Map, Result, Value};
+use serde_json::{json, Map, Value};
 
 const INPUT: &str = include_str!("day12.txt");
 
@@ -31,7 +31,7 @@ fn prune(v: Value) -> Value {
         Value::Object(m) => {
             let mut new_m: Map<String, Value> = Map::new();
             for (key, val) in m {
-                if val == String::from("red") {
+                if val == "red" {
                     return json!("{}");
                 }
                 new_m.insert(key.clone(), prune(val));
