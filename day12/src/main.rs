@@ -1,3 +1,5 @@
+use serde_json::{json, Map, Result, Value};
+
 const INPUT: &str = include_str!("day12.txt");
 
 fn main() {
@@ -17,9 +19,35 @@ fn part1(input: &str) -> i32 {
         .sum()
 }
 
+fn prune(v: Value) -> Value {
+    match v {
+        Value::Array(v) => {
+            let mut new_v = Vec::new();
+            for val in v {
+                new_v.push(prune(val));
+            }
+            Value::Array(new_v)
+        }
+        Value::Object(m) => {
+            let mut new_m: Map<String, Value> = Map::new();
+            for (key, val) in m {
+                if val == String::from("red") {
+                    return json!("{}");
+                }
+                new_m.insert(key.clone(), prune(val));
+            }
+            Value::Object(new_m)
+        }
+        _ => v,
+    }
+}
+
 // replace return type as required by the problem
 fn part2(input: &str) -> i32 {
-    0
+    let v: Value = serde_json::from_str(input).unwrap();
+    let ret: Value = prune(v);
+
+    part1(&ret.to_string())
 }
 
 #[cfg(test)]
@@ -68,20 +96,28 @@ mod tests {
         }
     }
 
-    // #[test]
-    // fn test_part2() {
-    //     let test_cases = [
-    //         TestCase {
-    //             input: "...",
-    //             expected: 123,
-    //         },
-    //         TestCase {
-    //             input: "abc",
-    //             expected: 345,
-    //         },
-    //     ];
-    //     for TestCase { input, expected } in test_cases.iter() {
-    //         assert_eq!(part2(*input), *expected);
-    //     }
-    // }
+    #[test]
+    fn test_part2() {
+        let test_cases = [
+            TestCase {
+                input: r#"[1,2,3]"#,
+                expected: 6,
+            },
+            TestCase {
+                input: r#"[1,{"c":"red","b":2},3]"#,
+                expected: 4,
+            },
+            TestCase {
+                input: r#"{"d":"red","e":[1,2,3,4],"f":5}"#,
+                expected: 0,
+            },
+            TestCase {
+                input: r#"[1,"red",5]"#,
+                expected: 6,
+            },
+        ];
+        for TestCase { input, expected } in test_cases.iter() {
+            assert_eq!(part2(*input), *expected);
+        }
+    }
 }
