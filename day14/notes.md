@@ -16,3 +16,4 @@
   complete cycles and one partial cycle of duration B = t % t_c. Total distance
   covered is s \* A + s \* min(t_s, B). (although, I still think Part 2 will
   require an iterative solution)
+- I was right, Part 2 requires evaluation at each second

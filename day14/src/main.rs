@@ -14,8 +14,15 @@ fn part1(input: &str) -> u32 {
     Race::from(input).get_winning_distance(2503)
 }
 
-fn part2(input: &str) -> i32 {
-    0
+fn part2(input: &str) -> u32 {
+    Race::from(input).get_winning_score(2503)
+}
+
+#[derive(Debug, Clone, Eq, PartialEq)]
+struct ReindeerState {
+    distance: u32,
+    score: u32,
+    time: u32,
 }
 
 #[derive(Debug, Clone, Eq, PartialEq)]
@@ -24,6 +31,7 @@ struct Reindeer {
     speed: u32,
     speed_duration: u32,
     rest_duration: u32,
+    state: ReindeerState,
 }
 
 impl From<&str> for Reindeer {
@@ -42,6 +50,11 @@ impl From<&str> for Reindeer {
             speed: fields.get(2).unwrap().as_str().parse().unwrap(),
             speed_duration: fields.get(3).unwrap().as_str().parse().unwrap(),
             rest_duration: fields.get(4).unwrap().as_str().parse().unwrap(),
+            state: ReindeerState {
+                distance: 0,
+                score: 0,
+                time: 0,
+            },
         }
     }
 }
@@ -54,6 +67,19 @@ impl Reindeer {
         let time_at_speed = num_cycles * self.speed_duration
             + std::cmp::min(self.speed_duration, partial_end_cycle_duration);
         self.speed * time_at_speed
+    }
+
+    fn step(&mut self) {
+        self.state.time += 1;
+        if self.is_running(self.state.time) {
+            self.state.distance += self.speed;
+        }
+    }
+
+    fn is_running(&self, t: u32) -> bool {
+        let cycle_time = self.speed_duration + self.rest_duration;
+        let time_in_cycle = t % cycle_time;
+        time_in_cycle > 0 && time_in_cycle <= self.speed_duration
     }
 }
 
@@ -80,6 +106,27 @@ impl Race {
             .max()
             .unwrap()
     }
+
+    fn get_winning_score(&mut self, t: u32) -> u32 {
+        for _ in 0..t {
+            // update each reindeer
+            self.reindeer.iter_mut().for_each(|r| r.step());
+            // check which reindeer are in the lead and increment their score
+            let current_winning_distance = self
+                .reindeer
+                .iter()
+                .map(|r| r.state.distance)
+                .max()
+                .unwrap();
+            self.reindeer
+                .iter_mut()
+                .filter(|r| r.state.distance == current_winning_distance)
+                .for_each(|r| r.state.score += 1);
+        }
+
+        // return the winning score
+        self.reindeer.iter().map(|r| r.state.score).max().unwrap()
+    }
 }
 
 #[cfg(test)]
@@ -98,7 +145,12 @@ mod tests {
                 name: String::from("Comet"),
                 speed: 14,
                 speed_duration: 10,
-                rest_duration: 127
+                rest_duration: 127,
+                state: ReindeerState {
+                    distance: 0,
+                    score: 0,
+                    time: 0,
+                },
             }
         );
 
@@ -111,7 +163,12 @@ mod tests {
                 name: String::from("Dancer"),
                 speed: 16,
                 speed_duration: 11,
-                rest_duration: 162
+                rest_duration: 162,
+                state: ReindeerState {
+                    distance: 0,
+                    score: 0,
+                    time: 0,
+                },
             }
         );
     }
@@ -135,5 +192,13 @@ mod tests {
 Dancer can fly 16 km/s for 11 seconds, but then must rest for 162 seconds.";
         let race = Race::from(input);
         assert_eq!(race.get_winning_distance(1000), 1120);
+    }
+
+    #[test]
+    fn test_get_winning_score() {
+        let input = r"Comet can fly 14 km/s for 10 seconds, but then must rest for 127 seconds.
+Dancer can fly 16 km/s for 11 seconds, but then must rest for 162 seconds.";
+        let mut race = Race::from(input);
+        assert_eq!(race.get_winning_score(1000), 689);
     }
 }
