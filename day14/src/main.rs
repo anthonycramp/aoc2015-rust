@@ -79,7 +79,7 @@ impl Reindeer {
     fn is_running(&self, t: u32) -> bool {
         let cycle_time = self.speed_duration + self.rest_duration;
         let time_in_cycle = t % cycle_time;
-        time_in_cycle > 0 && time_in_cycle <= self.speed_duration
+        (1..=self.speed_duration).contains(&time_in_cycle)
     }
 }
 
