@@ -27,7 +27,18 @@ fn part1(input: &str) -> u32 {
 }
 
 // replace return type as required by the problem
-fn part2(input: &str) -> i32 {
+fn part2(input: &str) -> u32 {
+    let mut aunt_sues = Vec::new();
+    for line in input.lines() {
+        aunt_sues.push(AuntSue::from(line));
+    }
+
+    let scan = AuntSue::new(3, 7, 2, 3, 0, 0, 5, 3, 2, 1);
+
+    if let Some(aunt_sue_match) = aunt_sues.iter().find(|&s| comp_part2(s, &scan)) {
+        return aunt_sue_match.id;
+    }
+
     0
 }
 
@@ -135,8 +146,7 @@ impl PartialEq for AuntSue {
         let children_match = self.children.is_none()
             || other.children.is_none()
             || (self.children == other.children);
-        let cats_match =
-            self.cats.is_none() || other.cats.is_none() || (self.cats == other.children);
+        let cats_match = self.cats.is_none() || other.cats.is_none() || (self.cats == other.cats);
         let samoyeds_match = self.samoyeds.is_none()
             || other.samoyeds.is_none()
             || (self.samoyeds == other.samoyeds);
@@ -168,6 +178,43 @@ impl PartialEq for AuntSue {
             && cars_match
             && perfumes_match
     }
+}
+
+fn comp_part2(aunt_sue: &AuntSue, scan: &AuntSue) -> bool {
+    let children_match = aunt_sue.children.is_none()
+        || scan.children.is_none()
+        || (aunt_sue.children == scan.children);
+    let cats_match = aunt_sue.cats.is_none() || scan.cats.is_none() || (aunt_sue.cats > scan.cats);
+    let samoyeds_match = aunt_sue.samoyeds.is_none()
+        || scan.samoyeds.is_none()
+        || (aunt_sue.samoyeds == scan.samoyeds);
+    let pomeranians_match = aunt_sue.pomeranians.is_none()
+        || scan.pomeranians.is_none()
+        || (aunt_sue.pomeranians < scan.pomeranians);
+    let akitas_match =
+        aunt_sue.akitas.is_none() || scan.akitas.is_none() || (aunt_sue.akitas == scan.akitas);
+    let vizslas_match =
+        aunt_sue.vizslas.is_none() || scan.vizslas.is_none() || (aunt_sue.vizslas == scan.vizslas);
+    let goldfish_match = aunt_sue.goldfish.is_none()
+        || scan.goldfish.is_none()
+        || (aunt_sue.goldfish < scan.goldfish);
+    let trees_match =
+        aunt_sue.trees.is_none() || scan.trees.is_none() || (aunt_sue.trees > scan.trees);
+    let cars_match = aunt_sue.cars.is_none() || scan.cars.is_none() || (aunt_sue.cars == scan.cars);
+    let perfumes_match = aunt_sue.perfumes.is_none()
+        || scan.perfumes.is_none()
+        || (aunt_sue.perfumes == scan.perfumes);
+
+    children_match
+        && cats_match
+        && samoyeds_match
+        && pomeranians_match
+        && akitas_match
+        && vizslas_match
+        && goldfish_match
+        && trees_match
+        && cars_match
+        && perfumes_match
 }
 
 #[cfg(test)]
