@@ -12,3 +12,9 @@
   number of ingredients) parts.
 - There's potential for some partitions to be ignored/skipped if they would
   result in a score of 0
+
+## Reflection
+
+- A LOT of code duplication in my solution
+- Hard coded for specific problem sizes
+- Should be a good use case for developing an iterator
