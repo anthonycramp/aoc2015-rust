@@ -46,6 +46,17 @@ fn part1_score_2(ingredients: &[Ingredient], combinations: &[i32]) -> i32 {
     capacity * durability * flavour * texture
 }
 
+fn part2_score_2(ingredients: &[Ingredient], combinations: &[i32]) -> i32 {
+    let calories =
+        ingredients[0].calories * combinations[0] + ingredients[1].calories * combinations[1];
+
+    if calories == 500 {
+        part1_score_2(&ingredients, &combinations)
+    } else {
+        0
+    }
+}
+
 fn part1_score_4(ingredients: &[Ingredient], combinations: &[i32]) -> i32 {
     assert_eq!(ingredients.len(), combinations.len());
 
@@ -84,6 +95,19 @@ fn part1_score_4(ingredients: &[Ingredient], combinations: &[i32]) -> i32 {
     capacity * durability * flavour * texture
 }
 
+fn part2_score_4(ingredients: &[Ingredient], combinations: &[i32]) -> i32 {
+    let calories = ingredients[0].calories * combinations[0]
+        + ingredients[1].calories * combinations[1]
+        + ingredients[2].calories * combinations[2]
+        + ingredients[3].calories * combinations[3];
+
+    if calories == 500 {
+        part1_score_4(&ingredients, &combinations)
+    } else {
+        0
+    }
+}
+
 fn solve_2(ingredients: &[Ingredient], score_fn: fn(&[Ingredient], &[i32]) -> i32) -> i32 {
     assert_eq!(ingredients.len(), 2);
     let mut max_score = 0;
@@ -118,7 +142,12 @@ fn solve_4(ingredients: &[Ingredient], score_fn: fn(&[Ingredient], &[i32]) -> i3
 
 // replace return type as required by the problem
 fn part2(input: &str) -> i32 {
-    0
+    let ingredients = parse_ingredients(input);
+    match ingredients.len() {
+        2 => solve_2(&ingredients, part2_score_2),
+        4 => solve_4(&ingredients, part2_score_4),
+        _ => panic!("Can't handle {} ingredients", ingredients.len()),
+    }
 }
 
 #[derive(Debug, Clone, Eq, PartialEq)]
@@ -186,5 +215,8 @@ Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3";
 
         let max_score = part1(input);
         assert_eq!(max_score, 62842880);
+
+        let max_score = part2(input);
+        assert_eq!(max_score, 57600000);
     }
 }
