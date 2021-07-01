@@ -12,3 +12,4 @@
 
 - Turns out brute force was quick enough
 - all thanks to the `itertools` crate and the combinations() method
+- I don't have any real understanding of what into_iter() does
