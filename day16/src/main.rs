@@ -106,19 +106,21 @@ impl Default for AuntSue {
 impl From<&str> for AuntSue {
     fn from(input: &str) -> Self {
         lazy_static! {
-            static ref RE_outer: Regex = Regex::new(r"Sue (\d+): (.*)").unwrap();
-            static ref RE_compound: Regex = Regex::new(r"(.*): (.*)").unwrap();
+            static ref RE_OUTER: Regex = Regex::new(r"Sue (\d+): (.*)").unwrap();
+            static ref RE_COMPOUND: Regex = Regex::new(r"(.*): (.*)").unwrap();
         }
 
-        let outer_fields = RE_outer.captures(input).unwrap();
+        let outer_fields = RE_OUTER.captures(input).unwrap();
 
-        let mut aunt_sue = AuntSue::default();
-        aunt_sue.id = outer_fields.get(1).unwrap().as_str().parse().unwrap();
+        let mut aunt_sue = AuntSue {
+            id: outer_fields.get(1).unwrap().as_str().parse().unwrap(),
+            ..Default::default()
+        };
 
         let compounds = outer_fields.get(2).unwrap().as_str();
 
         for compound in compounds.split(", ") {
-            let compoound_fields = RE_compound.captures(compound).unwrap();
+            let compoound_fields = RE_COMPOUND.captures(compound).unwrap();
             let compound_name = compoound_fields.get(1).unwrap().as_str();
             let compound_qty: u32 = compoound_fields.get(2).unwrap().as_str().parse().unwrap();
 
