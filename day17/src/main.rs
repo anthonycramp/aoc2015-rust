@@ -23,7 +23,7 @@ fn collect_combinations(target: u32, bucket_sizes: &[u8]) -> Vec<Vec<u8>> {
     let mut combinations = Vec::new();
 
     for i in 1..=bucket_sizes.len() {
-        let combos = bucket_sizes.into_iter().combinations(i);
+        let combos = bucket_sizes.iter().combinations(i);
         for combo in combos {
             if combo.iter().map(|&x| *x as u32).sum::<u32>() == target {
                 combinations.push(combo.iter().copied().copied().collect::<Vec<_>>());
