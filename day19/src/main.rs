@@ -1,3 +1,10 @@
+use regex::Regex;
+
+#[macro_use]
+extern crate lazy_static;
+
+use std::collections::{HashMap, HashSet};
+
 const INPUT: &str = include_str!("day19.txt");
 
 fn main() {
@@ -15,19 +22,53 @@ fn part2(input: &str) -> i32 {
     0
 }
 
-struct MoleculeMachine {}
+struct MoleculeMachine {
+    replacements: HashMap<String, Vec<String>>,
+    start: String,
+}
 
 impl From<&str> for MoleculeMachine {
     fn from(input: &str) -> Self {
-        Self {}
+        lazy_static! {
+            static ref RE: Regex = Regex::new(r"(.*) => (.*)").unwrap();
+        }
+        let mut replacements: HashMap<String, Vec<String>> = HashMap::new();
+        let mut start = String::new();
+
+        for line in input.lines() {
+            let line = line.trim();
+            if line.is_empty() {
+                continue;
+            }
+
+            if let Some(fields) = RE.captures(line) {
+                replacements
+                    .entry(String::from(fields.get(1).unwrap().as_str()))
+                    .or_default()
+                    .push(String::from(fields.get(2).unwrap().as_str()));
+            } else {
+                start = String::from(line);
+            }
+        }
+        Self {
+            replacements,
+            start,
+        }
     }
 }
 
 impl MoleculeMachine {
+    fn generate_molecules(&self) -> HashSet<String> {
+        let molecules = HashSet::new();
+
+        molecules
+    }
+
     fn count_molecules(&self) -> usize {
-        0
+        self.generate_molecules().len()
     }
 }
+
 #[cfg(test)]
 mod tests {
     use super::*;
