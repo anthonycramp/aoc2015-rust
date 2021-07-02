@@ -45,8 +45,7 @@ impl From<&str> for LightGrid {
         ret.grid.push(lights_off_row.clone());
 
         for line in input.lines() {
-            let mut light_row = Vec::new();
-            light_row.push(LightState::Off); // left border
+            let mut light_row = vec![LightState::Off]; // left border
             for c in line.chars() {
                 match c {
                     '.' => light_row.push(LightState::Off),
