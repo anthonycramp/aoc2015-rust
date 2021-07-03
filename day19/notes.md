@@ -19,3 +19,5 @@
   Looks like there is a simple equation to provide the solution to Part 2. Also,
   a greedy algorithm that reduces the target molecule back to e can return the
   correct answer. Knowledge of Context Free Grammars (CFGs) is helpful?
+- Reducing worked but I had to randomise the rules until a solution was found.
+  No guarantee that the value returned is optimal.
