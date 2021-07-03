@@ -16,7 +16,7 @@ fn main() {
 // replace return type as required by the problem
 fn part1(input: &str) -> usize {
     let machine = MoleculeMachine::from(input);
-    machine.count_molecules()
+    machine.calibrate()
 }
 
 // replace return type as required by the problem
@@ -60,11 +60,12 @@ impl From<&str> for MoleculeMachine {
 }
 
 impl MoleculeMachine {
-    fn generate_molecules(&self) -> HashSet<String> {
+    fn generate_molecules(&self, start_molecule: &str) -> HashSet<String> {
         let mut molecules = HashSet::new();
         for (key, value) in &self.replacements {
             // split the starting molecule
-            let fragments: Vec<String> = self.start.split(key).map(|s| String::from(s)).collect();
+            let fragments: Vec<String> =
+                start_molecule.split(key).map(|s| String::from(s)).collect();
 
             // for each replacement
             for v in value.iter() {
@@ -90,8 +91,8 @@ impl MoleculeMachine {
         molecules
     }
 
-    fn count_molecules(&self) -> usize {
-        self.generate_molecules().len()
+    fn calibrate(&self) -> usize {
+        self.generate_molecules(&self.start).len()
     }
 }
 
@@ -107,7 +108,7 @@ O => HH
 
 HOH";
         let machine = MoleculeMachine::from(input);
-        assert_eq!(machine.count_molecules(), 4);
+        assert_eq!(machine.calibrate(), 4);
     }
 
     #[test]
@@ -118,6 +119,6 @@ O => HH
 
 HOHOHO";
         let machine = MoleculeMachine::from(input);
-        assert_eq!(machine.count_molecules(), 7);
+        assert_eq!(machine.calibrate(), 7);
     }
 }
