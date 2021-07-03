@@ -20,8 +20,9 @@ fn part1(input: &str) -> usize {
 }
 
 // replace return type as required by the problem
-fn part2(input: &str) -> i32 {
-    0
+fn part2(input: &str) -> usize {
+    let machine = MoleculeMachine::from(input);
+    machine.synthesise()
 }
 
 struct MoleculeMachine {
@@ -94,6 +95,25 @@ impl MoleculeMachine {
     fn calibrate(&self) -> usize {
         self.generate_molecules(&self.start).len()
     }
+
+    fn synthesise(&self) -> usize {
+        let mut steps = 0;
+        let mut molecules = self.generate_molecules("e");
+
+        loop {
+            steps += 1;
+
+            if molecules.contains(&self.start) {
+                break;
+            }
+
+            for molecule in molecules.clone() {
+                molecules.remove(&molecule);
+                molecules.extend(self.generate_molecules(&molecule));
+            }
+        }
+        steps
+    }
 }
 
 #[cfg(test)]
@@ -120,5 +140,58 @@ O => HH
 HOHOHO";
         let machine = MoleculeMachine::from(input);
         assert_eq!(machine.calibrate(), 7);
+    }
+
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+
+        #[test]
+        fn test_calibrate1() {
+            let input = "H => HO
+H => OH
+O => HH
+
+HOH";
+            let machine = MoleculeMachine::from(input);
+            assert_eq!(machine.calibrate(), 4);
+        }
+
+        #[test]
+        fn test_calibrate2() {
+            let input = "H => HO
+H => OH
+O => HH
+
+HOHOHO";
+            let machine = MoleculeMachine::from(input);
+            assert_eq!(machine.calibrate(), 7);
+        }
+
+        #[test]
+        fn test_synthesise1() {
+            let input = "H => HO
+H => OH
+O => HH
+e => H
+e => O
+
+HOH";
+            let machine = MoleculeMachine::from(input);
+            assert_eq!(machine.synthesise(), 3);
+        }
+
+        #[test]
+        fn test_synthesise2() {
+            let input = "H => HO
+H => OH
+O => HH
+e => H
+e => O
+
+HOHOHO";
+            let machine = MoleculeMachine::from(input);
+            assert_eq!(machine.synthesise(), 6);
+        }
     }
 }
