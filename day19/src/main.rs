@@ -1,3 +1,4 @@
+use itertools::Itertools;
 use regex::Regex;
 
 #[macro_use]
@@ -13,8 +14,9 @@ fn main() {
 }
 
 // replace return type as required by the problem
-fn part1(input: &str) -> i32 {
-    0
+fn part1(input: &str) -> usize {
+    let machine = MoleculeMachine::from(input);
+    machine.count_molecules()
 }
 
 // replace return type as required by the problem
@@ -59,7 +61,31 @@ impl From<&str> for MoleculeMachine {
 
 impl MoleculeMachine {
     fn generate_molecules(&self) -> HashSet<String> {
-        let molecules = HashSet::new();
+        let mut molecules = HashSet::new();
+        for (key, value) in &self.replacements {
+            // split the starting molecule
+            let fragments: Vec<String> = self.start.split(key).map(|s| String::from(s)).collect();
+
+            // for each replacement
+            for v in value.iter() {
+                for i in 0..fragments.len() - 1 {
+                    let mut replacement: Vec<String> = Vec::new();
+                    for j in 0..fragments.len() - 1 {
+                        if i == j {
+                            replacement.push(v.clone());
+                        } else {
+                            replacement.push(key.clone());
+                        }
+                    }
+                    let new_molecule: String = fragments
+                        .iter()
+                        .interleave(replacement.iter())
+                        .cloned()
+                        .collect();
+                    molecules.insert(new_molecule);
+                }
+            }
+        }
 
         molecules
     }
