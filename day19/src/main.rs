@@ -1,4 +1,6 @@
 use itertools::Itertools;
+use rand::seq::SliceRandom;
+use rand::thread_rng;
 use regex::Regex;
 
 #[macro_use]
@@ -22,7 +24,7 @@ fn part1(input: &str) -> usize {
 // replace return type as required by the problem
 fn part2(input: &str) -> usize {
     let machine = MoleculeMachine::from(input);
-    machine.synthesise()
+    machine.reduce()
 }
 
 struct MoleculeMachine {
@@ -114,6 +116,48 @@ impl MoleculeMachine {
         }
         steps
     }
+
+    fn reduce(&self) -> usize {
+        let mut steps = 0;
+        let mut reverse_replacements = HashMap::new();
+        let mut rng = thread_rng();
+
+        for (key, value) in &self.replacements {
+            for v in value.iter() {
+                reverse_replacements.insert(v, key);
+            }
+        }
+
+        let mut fragments: Vec<&String> = reverse_replacements.keys().cloned().collect();
+
+        let mut dead_end = true;
+        loop {
+            fragments.shuffle(&mut rng);
+            let mut molecule = self.start.clone();
+            steps = 0;
+            loop {
+                let mut found_replacement = false;
+                for &fragment in fragments.iter() {
+                    if molecule.find(fragment) != None {
+                        molecule = molecule.replacen(fragment, reverse_replacements[fragment], 1);
+                        found_replacement = true;
+                        break;
+                    }
+                }
+
+                if !found_replacement {
+                    break;
+                }
+
+                steps += 1;
+            }
+
+            if molecule == "e" {
+                break;
+            }
+        }
+        steps
+    }
 }
 
 #[cfg(test)]
@@ -193,5 +237,31 @@ HOHOHO";
             let machine = MoleculeMachine::from(input);
             assert_eq!(machine.synthesise(), 6);
         }
+    }
+
+    #[test]
+    fn test_reduce1() {
+        let input = "H => HO
+H => OH
+O => HH
+e => H
+e => O
+
+HOH";
+        let machine = MoleculeMachine::from(input);
+        assert_eq!(machine.reduce(), 3);
+    }
+
+    #[test]
+    fn test_reduce2() {
+        let input = "H => HO
+H => OH
+O => HH
+e => H
+e => O
+
+HOHOHO";
+        let machine = MoleculeMachine::from(input);
+        assert_eq!(machine.reduce(), 6);
     }
 }
