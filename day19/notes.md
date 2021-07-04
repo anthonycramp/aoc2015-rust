@@ -21,3 +21,5 @@
   correct answer. Knowledge of Context Free Grammars (CFGs) is helpful?
 - Reducing worked but I had to randomise the rules until a solution was found.
   No guarantee that the value returned is optimal.
+- I don't have a good grasp on when values are moved or borrowed, especially
+  whene it comes to collections and iterators.
