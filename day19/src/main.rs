@@ -67,8 +67,7 @@ impl MoleculeMachine {
         let mut molecules = HashSet::new();
         for (key, value) in &self.replacements {
             // split the starting molecule
-            let fragments: Vec<String> =
-                start_molecule.split(key).map(|s| String::from(s)).collect();
+            let fragments: Vec<String> = start_molecule.split(key).map(String::from).collect();
 
             // for each replacement
             for v in value.iter() {
@@ -118,7 +117,7 @@ impl MoleculeMachine {
     }
 
     fn reduce(&self) -> usize {
-        let mut steps = 0;
+        let mut steps;
         let mut reverse_replacements = HashMap::new();
         let mut rng = thread_rng();
 
@@ -130,7 +129,6 @@ impl MoleculeMachine {
 
         let mut fragments: Vec<&String> = reverse_replacements.keys().cloned().collect();
 
-        let mut dead_end = true;
         loop {
             fragments.shuffle(&mut rng);
             let mut molecule = self.start.clone();
